@@ -1,0 +1,8 @@
+theme: jekyll-theme-cayman
+title: RSSServer
+description: Documentation center
+
+logo: /img/RSSServer-logo.png
+show_downloads: true
+
+include: contributing.md

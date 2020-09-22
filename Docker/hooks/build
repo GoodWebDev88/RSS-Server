@@ -1,0 +1,21 @@
+#!/bin/bash
+
+cd ..
+RSSSERVER_VERSION=$(grep "'RSSSERVER_VERSION'" constants.php | cut -d "'" -f4)
+echo "$RSSSERVER_VERSION"
+
+if [[ $DOCKERFILE_PATH == *-ARM ]]; then
+	#TODO: Add --squash --platform arm options when Docker Hub deamon supports them
+	docker build \
+		--build-arg RSSSERVER_VERSION="$RSSSERVER_VERSION" \
+		--build-arg SOURCE_BRANCH="$SOURCE_BRANCH" \
+		--build-arg SOURCE_COMMIT="$SOURCE_COMMIT" \
+		-f "$DOCKERFILE_PATH" -t "$IMAGE_NAME" .
+else
+	#TODO: Add --squash option when Docker Hub deamon supports it
+	docker build \
+		--build-arg RSSSERVER_VERSION="$RSSSERVER_VERSION" \
+		--build-arg SOURCE_BRANCH="$SOURCE_BRANCH" \
+		--build-arg SOURCE_COMMIT="$SOURCE_COMMIT" \
+		-f "$DOCKERFILE_PATH" -t "$IMAGE_NAME" .
+fi

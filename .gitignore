@@ -1,6 +1,20 @@
+/bin
+/node_modules
+package*.json
+constants.local.php
 
-# .v4p backup files
-*~.xml
-
-# Dynamic plugins .dll
-bin/
+# Temp files
+*~
+*.bak
+*.backup
+\#*
+.\#*
+*\#
+*.swp
+*.swap
+*.sav
+*.save
+*.autosav
+*.autosave
+*.sass-cache
+sass.sh

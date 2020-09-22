@@ -1,0 +1,34 @@
+version: "3"
+
+services:
+  rssserver_postgresql:
+    image: postgres
+    restart: unless-stopped
+    container_name: rssserver-db
+    volumes:
+      - pgsql_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=rssserver
+      - POSTGRES_PASSWORD=rssserver
+      - POSTGRES_DB=rssserver
+
+  rssserver:
+    image: rssserver/rssserver
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - rssserver_postgresql
+    volumes:
+      - rssserver_data:/var/www/RSSServer/data
+      - rssserver_extensions:/var/www/RSSServer/extensions
+    environment:
+      - CRON_MIN=*/20
+      - TZ=Europe/Copenhagen
+    labels:
+      - "traefik.port=80"
+
+volumes:
+  pgsql_data:
+  rssserver_data:
+  rssserver_extensions:
