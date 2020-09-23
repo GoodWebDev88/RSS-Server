@@ -2,12 +2,12 @@
 //NB: Do not edit; use ./constants.local.php instead.
 
 //<Not customisable>
-define('RSSSERVER_VERSION', '1.16.2');
+define('RSSSERVER_VERSION', '1.0.0');
 define('RSSSERVER_WEBSITE', 'https://rssserver.org');
 define('RSSSERVER_WIKI', 'https://rssserver.github.io/RSSServer/');
 
 define('RSSSERVER_PATH', __DIR__);
-define('PUBLIC_PATH', RSSSERVER_PATH . '/p');
+define('PUBLIC_PATH', RSSSERVER_PATH . '/public');
 define('PUBLIC_TO_INDEX_PATH', '/i');
 define('INDEX_PATH', PUBLIC_PATH . PUBLIC_TO_INDEX_PATH);
 define('PUBLIC_RELATIVE', '..');
