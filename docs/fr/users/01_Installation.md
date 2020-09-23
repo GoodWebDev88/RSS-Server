@@ -42,7 +42,7 @@ Comme son nom l’indique, il s’agit de la version sur laquelle les développe
 
 <VirtualHost *:80>
 	ServerName rss.example.net
-	DocumentRoot /path/to/RSSServer/p/
+	DocumentRoot /path/to/RSSServer/public/
 
 	<Directory /path/to/RSSServer/p>
 		AllowOverride AuthConfig FileInfo Indexes Limit
@@ -58,7 +58,7 @@ Comme son nom l’indique, il s’agit de la version sur laquelle les développe
 <IfModule mod_ssl.c>
 	<VirtualHost *:443>
 		ServerName rss.example.net
-		DocumentRoot /path/to/RSSServer/p/
+		DocumentRoot /path/to/RSSServer/public/
 
 		<Directory /path/to/RSSServer/p>
 			AllowOverride AuthConfig FileInfo Indexes Limit
@@ -104,7 +104,7 @@ server {
 	server_name rss.example.net;
 
 	# le répertoire où se trouve le dossier p de RSSServer
-	root /srv/RSSServer/p/;
+	root /srv/RSSServer/public/;
 
 	index index.php index.html index.htm;
 

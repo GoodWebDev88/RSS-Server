@@ -15,7 +15,7 @@ This is an example Apache virtual hosts configuration file. It covers HTTP and H
 
 <VirtualHost *:80>
 	ServerName rss.example.net
-	DocumentRoot /path/to/RSSServer/p/
+	DocumentRoot /path/to/RSSServer/public/
 
 	<Directory /path/to/RSSServer/p>
 		AllowOverride AuthConfig FileInfo Indexes Limit
@@ -31,7 +31,7 @@ This is an example Apache virtual hosts configuration file. It covers HTTP and H
 <IfModule mod_ssl.c>
 	<VirtualHost *:443>
 		ServerName rss.example.net
-		DocumentRoot /path/to/RSSServer/p/
+		DocumentRoot /path/to/RSSServer/public/
 
 		<Directory /path/to/RSSServer/p>
 			AllowOverride AuthConfig FileInfo Indexes Limit
@@ -76,7 +76,7 @@ server {
 	server_name rss.example.net;
 
 	# the folder p of your RSSServer installation
-	root /srv/RSSServer/p/;
+	root /srv/RSSServer/public/;
 
 	index index.php index.html index.htm;
 

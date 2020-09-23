@@ -265,11 +265,11 @@ The `RSSSERVER_ENV=development` environment variable increases the level of logg
 ### Custom Apache configuration (advanced users)
 
 Changes in Apache `.htaccess` files are applied when restarting the container.
-In particular, if you want RSSServer to use HTTP-based login (instead of the easier Web form login), you can mount your own `./RSSServer/p/i/.htaccess`:
+In particular, if you want RSSServer to use HTTP-based login (instead of the easier Web form login), you can mount your own `./RSSServer/public/i/.htaccess`:
 
 ```
 docker run ...
-  -v /your/.htaccess:/var/www/RSSServer/p/i/.htaccess \
+  -v /your/.htaccess:/var/www/RSSServer/public/i/.htaccess \
   -v /your/.htpasswd:/var/www/RSSServer/data/.htpasswd \
   ...
   --name rssserver rssserver/rssserver

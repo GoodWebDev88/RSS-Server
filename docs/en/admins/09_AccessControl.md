@@ -12,7 +12,7 @@ This option requires nothing more than selecting Form Authentication during inst
 
 You may also choose to use HTTP Authentication provided by your web server.[^1]
 
-If you choose to use this option, create a `./p/i/.htaccess` file with a matching `.htpasswd` file.
+If you choose to use this option, create a `./public/i/.htaccess` file with a matching `.htpasswd` file.
 
 ## No Authentication
 Not using authentication on your server is dangerous, as anyone with access to your server would be able to make changes as an admin. It is never advisable to not use any form of authentication, but **never** chose this option on a server that is able to be accessed outside of your home network.

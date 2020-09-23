@@ -11,8 +11,8 @@ question de performances et de praticité :
   cookie. Sans cela, ces fichiers seraient souvent re-téléchargés, en
   particulier lorsque le formulaire de connexion est utilisé. De plus, les
   requêtes vers ces ressources seraient plus lourdes.
-* La racine publique ```./p/``` peut être servie sans restriction d'accès
-  HTTP (qui peut avantageusement être mise en place dans ```./p/i/```).
+* La racine publique ```./public/``` peut être servie sans restriction d'accès
+  HTTP (qui peut avantageusement être mise en place dans ```./public/i/```).
 * Cela permet d'éviter des problèmes pour des fichiers qui doivent être
   publics pour bien fonctionner, comme ```favicon.ico```, ```robots.txt```,
   etc.

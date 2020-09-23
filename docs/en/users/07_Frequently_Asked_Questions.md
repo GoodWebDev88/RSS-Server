@@ -5,7 +5,7 @@ We may not have answered all of your questions in the previous sections. The FAQ
 Of course, ```/i``` has a purpose! It's used for performance and usability:
 
 * It allows for serving icons, images, styles and scripts without cookies. Without that trick, those files would be downloaded more often, especially when form authentication is used. Also, HTTP requests would be heavier.
-* The ```./p/``` public root can be served without any HTTP access restrictions. Whereas it could be implemented in ```./p/i/```.
+* The ```./public/``` public root can be served without any HTTP access restrictions. Whereas it could be implemented in ```./public/i/```.
 * It avoids problems while serving public resources like ```favicon.ico```, ```robots.txt```, etc.
 * It allows the logo to be displayed instead of a white page while hitting a restriction or a delay during the loading process.
 

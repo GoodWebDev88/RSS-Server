@@ -60,7 +60,7 @@ class Minz_Session {
 	}
 
 	public static function getCookieDir() {
-		// Get the script_name (e.g. /p/i/index.php) and keep only the path.
+		// Get the script_name (e.g. /public/i/index.php) and keep only the path.
 		$cookie_dir = '';
 		if (!empty($_SERVER['HTTP_X_FORWARDED_PREFIX'])) {
 			$cookie_dir .= rtrim($_SERVER['HTTP_X_FORWARDED_PREFIX'], '/ ');

@@ -5098,8 +5098,8 @@ msgstr ""
 #. type: Bullet: '* '
 #: en/./users/07_Frequently_Asked_Questions.md:11
 msgid ""
-"The ```./p/``` public root can be served without any HTTP access "
-"restrictions. Whereas it could be implemented in ```./p/i/```."
+"The ```./public/``` public root can be served without any HTTP access "
+"restrictions. Whereas it could be implemented in ```./public/i/```."
 msgstr ""
 
 #. type: Bullet: '* '

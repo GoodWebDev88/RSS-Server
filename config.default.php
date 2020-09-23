@@ -14,7 +14,7 @@ return array(
 	# Specify address of the RSSServer instance,
 	# used when building absolute URLs, e.g. for WebSub.
 	# Examples:
-	# https://example.net/RSSServer/p/
+	# https://example.net/RSSServer/public/
 	# https://rssserver.example.net/
 	'base_url' => '',
 
@@ -50,9 +50,9 @@ return array(
 	# Login method:
 	#	`none` is without password and shows only the default user;
 	#	`form` is a conventional Web login form;
-	#	`http_auth` is an access controled by the HTTP Web server (e.g. `/RSSServer/p/i/.htaccess` for Apache)
-	#		if you use `http_auth`, remember to protect only `/RSSServer/p/i/`,
-	#		and in particular not protect `/RSSServer/p/api/` if you would like to use the API (different login system).
+	#	`http_auth` is an access controled by the HTTP Web server (e.g. `/RSSServer/public/i/.htaccess` for Apache)
+	#		if you use `http_auth`, remember to protect only `/RSSServer/public/i/`,
+	#		and in particular not protect `/RSSServer/public/api/` if you would like to use the API (different login system).
 	'auth_type' => 'form',
 
 	# Allow or not the use of the API, used for mobile apps.
@@ -62,7 +62,7 @@ return array(
 
 	# Allow or not the use of an unsafe login,
 	#	by providing username and password in the login URL:
-	#	http://example.net/RSSServer/p/i/?c=auth&a=login&u=alice&p=1234
+	#	http://example.net/RSSServer/public/i/?c=auth&a=login&u=alice&p=1234
 	'unsafe_autologin_enabled' => false,
 
 	# Enable or not the use of syslog to log the activity of
