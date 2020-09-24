@@ -1,8 +1,8 @@
 # Opening a pull request
 
-So you want to propose a patch to the community? It's time to open a [pull request](https://github.com/RSSServer/RSSServer/pulls)!
+So you want to propose a patch to the community? It's time to open a [pull request]!
 
-When you open a PR, your message will be prefilled with a message based on [a template](https://github.com/RSSServer/RSSServer/blob/master/docs/pull_request_template.md). It contains a checklist to make sure you didn't forget anything. It is very important to verify you did everything mentioned so documentation is up-to-date, the commit history stays clear and the code is always stable.
+When you open a PR, your message will be prefilled with a message based on [a template]. It contains a checklist to make sure you didn't forget anything. It is very important to verify you did everything mentioned so documentation is up-to-date, the commit history stays clear and the code is always stable.
 
 The rest of this document explains specific points.
 

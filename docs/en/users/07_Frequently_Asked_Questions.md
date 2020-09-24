@@ -26,14 +26,14 @@ Here are the steps to follow:
 
 1. __Verify if the feed syntax is valid__ with the [W3C on-line tool](https://validator.w3.org/feed/ "RSS and Atom feed validator"). If it's not valid, there's nothing we can do.
 1. __Verify SimplePie validation__ with the [SimplePie on-line tool](https://simplepie.org/demo/ "SimplePie official demo"). If it's not recognized, there's nothing we can do.
-1. __Verify RSSServer integration__ with the [demo](https://demo.rssserver.org "RSSServer official demo"). If it's not working, you need to [create an issue on Github](https://github.com/RSSServer/RSSServer/issues/new "Create an issue for RSSServer") so we can have a look at it. If it's working, there's probably something fishy with the hosting server.
+1. __Verify RSSServer integration__ with the [demo](https://demo.rssserver.org "RSSServer official demo"). If it's not working, you need to [create an issue on Github] so we can have a look at it. If it's working, there's probably something fishy with the hosting server.
 
 ## How can you change a forgotten password?
 
-Since the [1.10.0](https://github.com/RSSServer/RSSServer/releases/tag/1.10.0) release, admins can change user passwords directly from the interface. This interface is available under  ```Administration → Manage users```.
+admins can change user passwords directly from the interface. This interface is available under  ```Administration → Manage users```.
 Select a user, enter a password, and validate.
 
-Since the [1.8.0](https://github.com/RSSServer/RSSServer/releases/tag/1.8.0) release, admins can change user passwords using a terminal. It worth mentioning that you must have access to PHP CLI. Open a terminal, and type the following command:
+admins can change user passwords using a terminal. It worth mentioning that you must have access to PHP CLI. Open a terminal, and type the following command:
 ```sh
 ./cli/update_user.php --user <username> --password <password>
 ```

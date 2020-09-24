@@ -3,14 +3,14 @@
 /**
  * This class handles main actions of RSSServer.
  */
-class RSSServer_index_Controller extends Minz_ActionController {
+class RSSServer_index_Controller extends Base_ActionController {
 
 	/**
 	 * This action only redirect on the default view mode (normal or global)
 	 */
 	public function indexAction() {
 		$prefered_output = RSSServer_Context::$user_conf->view_mode;
-		Minz_Request::forward(array(
+		Base_Request::forward(array(
 			'c' => 'index',
 			'a' => $prefered_output
 		));
@@ -22,14 +22,14 @@ class RSSServer_index_Controller extends Minz_ActionController {
 	public function normalAction() {
 		$allow_anonymous = RSSServer_Context::$system_conf->allow_anonymous;
 		if (!RSSServer_Auth::hasAccess() && !$allow_anonymous) {
-			Minz_Request::forward(array('c' => 'auth', 'a' => 'login'));
+			Base_Request::forward(array('c' => 'auth', 'a' => 'login'));
 			return;
 		}
 
 		try {
 			$this->updateContext();
 		} catch (RSSServer_Context_Exception $e) {
-			Minz_Error::error(404);
+			Base_Error::error(404);
 		}
 
 		$this->_csp([
@@ -41,12 +41,12 @@ class RSSServer_index_Controller extends Minz_ActionController {
 
 		$this->view->categories = RSSServer_Context::$categories;
 
-		$this->view->rss_title = RSSServer_Context::$name . ' | ' . Minz_View::title();
+		$this->view->rss_title = RSSServer_Context::$name . ' | ' . Base_View::title();
 		$title = RSSServer_Context::$name;
 		if (RSSServer_Context::$get_unread > 0) {
 			$title = '(' . RSSServer_Context::$get_unread . ') ' . $title;
 		}
-		Minz_View::prependTitle($title . ' · ');
+		Base_View::prependTitle($title . ' · ');
 
 		RSSServer_Context::$id_max = time() . '000000';
 
@@ -59,7 +59,7 @@ class RSSServer_index_Controller extends Minz_ActionController {
 					$view->nbUnreadTags += $tag->nbUnread();
 				}
 			} catch (Exception $e) {
-				Minz_Log::notice($e->getMessage());
+				Base_Log::notice($e->getMessage());
 			}
 		};
 
@@ -70,8 +70,8 @@ class RSSServer_index_Controller extends Minz_ActionController {
 				RSSServer_Context::$number--;
 				ob_start();	//Buffer "one entry at a time"
 			} catch (RSSServer_EntriesGetter_Exception $e) {
-				Minz_Log::notice($e->getMessage());
-				Minz_Error::error(404);
+				Base_Log::notice($e->getMessage());
+				Base_Error::error(404);
 			}
 		};
 
@@ -100,27 +100,27 @@ class RSSServer_index_Controller extends Minz_ActionController {
 	public function globalAction() {
 		$allow_anonymous = RSSServer_Context::$system_conf->allow_anonymous;
 		if (!RSSServer_Auth::hasAccess() && !$allow_anonymous) {
-			Minz_Request::forward(array('c' => 'auth', 'a' => 'login'));
+			Base_Request::forward(array('c' => 'auth', 'a' => 'login'));
 			return;
 		}
 
-		Minz_View::appendScript(Minz_Url::display('/scripts/extra.js?' . @filemtime(PUBLIC_PATH . '/scripts/extra.js')));
-		Minz_View::appendScript(Minz_Url::display('/scripts/global_view.js?' . @filemtime(PUBLIC_PATH . '/scripts/global_view.js')));
+		Base_View::appendScript(Base_Url::display('/scripts/extra.js?' . @filemtime(PUBLIC_PATH . '/scripts/extra.js')));
+		Base_View::appendScript(Base_Url::display('/scripts/global_view.js?' . @filemtime(PUBLIC_PATH . '/scripts/global_view.js')));
 
 		try {
 			$this->updateContext();
 		} catch (RSSServer_Context_Exception $e) {
-			Minz_Error::error(404);
+			Base_Error::error(404);
 		}
 
 		$this->view->categories = RSSServer_Context::$categories;
 
-		$this->view->rss_title = RSSServer_Context::$name . ' | ' . Minz_View::title();
+		$this->view->rss_title = RSSServer_Context::$name . ' | ' . Base_View::title();
 		$title = _t('index.feed.title_global');
 		if (RSSServer_Context::$get_unread > 0) {
 			$title = '(' . RSSServer_Context::$get_unread . ') ' . $title;
 		}
-		Minz_View::prependTitle($title . ' · ');
+		Base_View::prependTitle($title . ' · ');
 
 		$this->_csp([
 			'default-src' => "'self'",
@@ -136,32 +136,32 @@ class RSSServer_index_Controller extends Minz_ActionController {
 	public function rssAction() {
 		$allow_anonymous = RSSServer_Context::$system_conf->allow_anonymous;
 		$token = RSSServer_Context::$user_conf->token;
-		$token_param = Minz_Request::param('token', '');
+		$token_param = Base_Request::param('token', '');
 		$token_is_ok = ($token != '' && $token === $token_param);
 
 		// Check if user has access.
 		if (!RSSServer_Auth::hasAccess() &&
 				!$allow_anonymous &&
 				!$token_is_ok) {
-			Minz_Error::error(403);
+			Base_Error::error(403);
 		}
 
 		try {
 			$this->updateContext();
 		} catch (RSSServer_Context_Exception $e) {
-			Minz_Error::error(404);
+			Base_Error::error(404);
 		}
 
 		try {
 			$this->view->entries = RSSServer_index_Controller::listEntriesByContext();
 		} catch (RSSServer_EntriesGetter_Exception $e) {
-			Minz_Log::notice($e->getMessage());
-			Minz_Error::error(404);
+			Base_Log::notice($e->getMessage());
+			Base_Error::error(404);
 		}
 
 		// No layout for RSS output.
 		$this->view->url = PUBLIC_TO_INDEX_PATH . '/' . (empty($_SERVER['QUERY_STRING']) ? '' : '?' . $_SERVER['QUERY_STRING']);
-		$this->view->rss_title = RSSServer_Context::$name . ' | ' . Minz_View::title();
+		$this->view->rss_title = RSSServer_Context::$name . ' | ' . Base_View::title();
 		$this->view->_layout(false);
 		header('Content-Type: application/rss+xml; charset=utf-8');
 	}
@@ -190,12 +190,12 @@ class RSSServer_index_Controller extends Minz_ActionController {
 			RSSServer_Context::$categories, 1
 		);
 
-		RSSServer_Context::_get(Minz_Request::param('get', 'a'));
+		RSSServer_Context::_get(Base_Request::param('get', 'a'));
 
-		RSSServer_Context::$state = Minz_Request::param(
+		RSSServer_Context::$state = Base_Request::param(
 			'state', RSSServer_Context::$user_conf->default_state
 		);
-		$state_forced_by_user = Minz_Request::param('state', false) !== false;
+		$state_forced_by_user = Base_Request::param('state', false) !== false;
 		if (RSSServer_Context::$user_conf->default_view === 'adaptive' &&
 				RSSServer_Context::$get_unread <= 0 &&
 				!RSSServer_Context::isStateEnabled(RSSServer_Entry::STATE_READ) &&
@@ -203,18 +203,18 @@ class RSSServer_index_Controller extends Minz_ActionController {
 			RSSServer_Context::$state |= RSSServer_Entry::STATE_READ;
 		}
 
-		RSSServer_Context::$search = new RSSServer_BooleanSearch(Minz_Request::param('search', ''));
-		RSSServer_Context::$order = Minz_Request::param(
+		RSSServer_Context::$search = new RSSServer_BooleanSearch(Base_Request::param('search', ''));
+		RSSServer_Context::$order = Base_Request::param(
 			'order', RSSServer_Context::$user_conf->sort_order
 		);
-		RSSServer_Context::$number = intval(Minz_Request::param('nb', RSSServer_Context::$user_conf->posts_per_page));
+		RSSServer_Context::$number = intval(Base_Request::param('nb', RSSServer_Context::$user_conf->posts_per_page));
 		if (RSSServer_Context::$number > RSSServer_Context::$user_conf->max_posts_per_rss) {
 			RSSServer_Context::$number = max(
 				RSSServer_Context::$user_conf->max_posts_per_rss,
 				RSSServer_Context::$user_conf->posts_per_page);
 		}
-		RSSServer_Context::$first_id = Minz_Request::param('next', '');
-		RSSServer_Context::$sinceHours = intval(Minz_Request::param('hours', 0));
+		RSSServer_Context::$first_id = Base_Request::param('next', '');
+		RSSServer_Context::$sinceHours = intval(Base_Request::param('hours', 0));
 	}
 
 	/**
@@ -253,7 +253,7 @@ class RSSServer_index_Controller extends Minz_ActionController {
 	 * This action displays the about page of RSSServer.
 	 */
 	public function aboutAction() {
-		Minz_View::prependTitle(_t('index.about.title') . ' · ');
+		Base_View::prependTitle(_t('index.about.title') . ' · ');
 	}
 
 	/**
@@ -265,12 +265,12 @@ class RSSServer_index_Controller extends Minz_ActionController {
 	public function tosAction() {
 		$terms_of_service = file_get_contents(join_path(DATA_PATH, 'tos.html'));
 		if (!$terms_of_service) {
-			Minz_Error::error(404);
+			Base_Error::error(404);
 		}
 
 		$this->view->terms_of_service = $terms_of_service;
 		$this->view->can_register = !max_registrations_reached();
-		Minz_View::prependTitle(_t('index.tos.title') . ' · ');
+		Base_View::prependTitle(_t('index.tos.title') . ' · ');
 	}
 
 	/**
@@ -278,20 +278,20 @@ class RSSServer_index_Controller extends Minz_ActionController {
 	 */
 	public function logsAction() {
 		if (!RSSServer_Auth::hasAccess()) {
-			Minz_Error::error(403);
+			Base_Error::error(403);
 		}
 
-		Minz_View::prependTitle(_t('index.log.title') . ' · ');
+		Base_View::prependTitle(_t('index.log.title') . ' · ');
 
-		if (Minz_Request::isPost()) {
+		if (Base_Request::isPost()) {
 			RSSServer_LogDAO::truncate();
 		}
 
 		$logs = RSSServer_LogDAO::lines();	//TODO: ask only the necessary lines
 
 		//gestion pagination
-		$page = Minz_Request::param('page', 1);
-		$this->view->logsPaginator = new Minz_Paginator($logs);
+		$page = Base_Request::param('page', 1);
+		$this->view->logsPaginator = new Base_Paginator($logs);
 		$this->view->logsPaginator->_nbItemsPerPage(50);
 		$this->view->logsPaginator->_currentPage($page);
 	}

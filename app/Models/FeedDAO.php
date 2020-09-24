@@ -1,15 +1,15 @@
 <?php
 
-class RSSServer_FeedDAO extends Minz_ModelPdo implements RSSServer_Searchable {
+class RSSServer_FeedDAO extends Base_ModelPdo implements RSSServer_Searchable {
 
 	protected function addColumn($name) {
-		Minz_Log::warning(__method__ . ': ' . $name);
+		Base_Log::warning(__method__ . ': ' . $name);
 		try {
 			if ($name === 'attributes') {	//v1.11.0
 				return $this->pdo->exec('ALTER TABLE `_feed` ADD COLUMN attributes TEXT') !== false;
 			}
 		} catch (Exception $e) {
-			Minz_Log::error(__method__ . ' error: ' . $e->getMessage());
+			Base_Log::error(__method__ . ' error: ' . $e->getMessage());
 		}
 		return false;
 	}
@@ -79,7 +79,7 @@ class RSSServer_FeedDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 			if ($this->autoUpdateDb($info)) {
 				return $this->addFeed($valuesTmp);
 			}
-			Minz_Log::error('SQL error addFeed: ' . $info[2]);
+			Base_Log::error('SQL error addFeed: ' . $info[2]);
 			return false;
 		}
 	}
@@ -158,7 +158,7 @@ class RSSServer_FeedDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 			if ($this->autoUpdateDb($info)) {
 				return $this->updateFeed($id, $valuesTmp);
 			}
-			Minz_Log::error('SQL error updateFeed: ' . $info[2] . ' for feed ' . $id);
+			Base_Log::error('SQL error updateFeed: ' . $info[2] . ' for feed ' . $id);
 			return false;
 		}
 	}
@@ -189,7 +189,7 @@ class RSSServer_FeedDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 			return $stm->rowCount();
 		} else {
 			$info = $stm == null ? $this->pdo->errorInfo() : $stm->errorInfo();
-			Minz_Log::error('SQL error updateLastUpdate: ' . $info[2]);
+			Base_Log::error('SQL error updateLastUpdate: ' . $info[2]);
 			return false;
 		}
 	}
@@ -213,7 +213,7 @@ class RSSServer_FeedDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 			return $stm->rowCount();
 		} else {
 			$info = $stm == null ? $this->pdo->errorInfo() : $stm->errorInfo();
-			Minz_Log::error('SQL error changeCategory: ' . $info[2]);
+			Base_Log::error('SQL error changeCategory: ' . $info[2]);
 			return false;
 		}
 	}
@@ -228,7 +228,7 @@ class RSSServer_FeedDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 			return $stm->rowCount();
 		} else {
 			$info = $stm == null ? $this->pdo->errorInfo() : $stm->errorInfo();
-			Minz_Log::error('SQL error deleteFeed: ' . $info[2]);
+			Base_Log::error('SQL error deleteFeed: ' . $info[2]);
 			return false;
 		}
 	}
@@ -242,7 +242,7 @@ class RSSServer_FeedDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 			return $stm->rowCount();
 		} else {
 			$info = $stm == null ? $this->pdo->errorInfo() : $stm->errorInfo();
-			Minz_Log::error('SQL error deleteFeedByCategory: ' . $info[2]);
+			Base_Log::error('SQL error deleteFeedByCategory: ' . $info[2]);
 			return false;
 		}
 	}
@@ -351,7 +351,7 @@ class RSSServer_FeedDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 			if ($this->autoUpdateDb($info)) {
 				return $this->listFeedsOrderUpdate($defaultCacheDuration);
 			}
-			Minz_Log::error('SQL error listFeedsOrderUpdate: ' . $info[2]);
+			Base_Log::error('SQL error listFeedsOrderUpdate: ' . $info[2]);
 			return array();
 		}
 	}
@@ -402,7 +402,7 @@ class RSSServer_FeedDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 			return $stm->rowCount();
 		} else {
 			$info = $stm == null ? $this->pdo->errorInfo() : $stm->errorInfo();
-			Minz_Log::error('SQL error updateCachedValue: ' . $info[2]);
+			Base_Log::error('SQL error updateCachedValue: ' . $info[2]);
 			return false;
 		}
 	}
@@ -414,7 +414,7 @@ class RSSServer_FeedDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 		$this->pdo->beginTransaction();
 		if (!($stm && $stm->execute())) {
 			$info = $stm == null ? $this->pdo->errorInfo() : $stm->errorInfo();
-			Minz_Log::error('SQL error truncate: ' . $info[2]);
+			Base_Log::error('SQL error truncate: ' . $info[2]);
 			$this->pdo->rollBack();
 			return false;
 		}
@@ -426,7 +426,7 @@ class RSSServer_FeedDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 		$stm->bindParam(':id', $id, PDO::PARAM_INT);
 		if (!($stm && $stm->execute())) {
 			$info = $stm == null ? $this->pdo->errorInfo() : $stm->errorInfo();
-			Minz_Log::error('SQL error truncate: ' . $info[2]);
+			Base_Log::error('SQL error truncate: ' . $info[2]);
 			$this->pdo->rollBack();
 			return false;
 		}
@@ -441,7 +441,7 @@ class RSSServer_FeedDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 		$this->pdo->beginTransaction();
 		if (!($stm && $stm->execute())) {
 			$info = $stm == null ? $this->pdo->errorInfo() : $stm->errorInfo();
-			Minz_Log::error('SQL error truncate: ' . $info[2]);
+			Base_Log::error('SQL error truncate: ' . $info[2]);
 			$this->pdo->rollBack();
 			return false;
 		}
@@ -450,7 +450,7 @@ class RSSServer_FeedDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 		$stm = $this->pdo->prepare($sql);
 		if (!($stm && $stm->execute())) {
 			$info = $stm == null ? $this->pdo->errorInfo() : $stm->errorInfo();
-			Minz_Log::error('SQL error truncate: ' . $info[2]);
+			Base_Log::error('SQL error truncate: ' . $info[2]);
 			$this->pdo->rollBack();
 			return false;
 		}
@@ -506,13 +506,13 @@ class RSSServer_FeedDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 		$stm = $this->pdo->prepare($sql);
 		if (!($stm && $stm->execute(array(':new_value' => RSSServer_Feed::TTL_DEFAULT, ':old_value' => -2)))) {
 			$info = $stm == null ? $this->pdo->errorInfo() : $stm->errorInfo();
-			Minz_Log::error('SQL warning updateTTL 1: ' . $info[2] . ' ' . $sql);
+			Base_Log::error('SQL warning updateTTL 1: ' . $info[2] . ' ' . $sql);
 
 			$sql2 = 'ALTER TABLE `_feed` ADD COLUMN ttl INT NOT NULL DEFAULT ' . RSSServer_Feed::TTL_DEFAULT;	//v0.7.3
 			$stm = $this->pdo->query($sql2);
 			if ($stm === false) {
 				$info = $stm == null ? $this->pdo->errorInfo() : $stm->errorInfo();
-				Minz_Log::error('SQL error updateTTL 2: ' . $info[2] . ' ' . $sql2);
+				Base_Log::error('SQL error updateTTL 2: ' . $info[2] . ' ' . $sql2);
 			}
 		} else {
 			$stm->execute(array(':new_value' => -3600, ':old_value' => -1));

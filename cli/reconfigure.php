@@ -37,7 +37,7 @@ if (!validateOptions($argv, array_merge($params, $dBparams))) {
 
 fwrite(STDERR, 'Reconfiguring RSSServer…' . "\n");
 
-$config = Minz_Configuration::get('system');
+$config = Base_Configuration::get('system');
 foreach ($params as $param) {
 	$param = rtrim($param, ':');
 	if (isset($options[$param])) {

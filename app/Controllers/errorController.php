@@ -3,21 +3,21 @@
 /**
  * Controller to handle error page.
  */
-class RSSServer_error_Controller extends Minz_ActionController {
+class RSSServer_error_Controller extends Base_ActionController {
 	/**
 	 * This action is the default one for the controller.
 	 *
-	 * It is called by Minz_Error::error() method.
+	 * It is called by Base_Error::error() method.
 	 *
-	 * Parameters are passed by Minz_Session to have a proper url:
+	 * Parameters are passed by Base_Session to have a proper url:
 	 *   - error_code (default: 404)
 	 *   - error_logs (default: array())
 	 */
 	public function indexAction() {
-		$code_int = Minz_Session::param('error_code', 404);
-		$error_logs = Minz_Session::param('error_logs', array());
-		Minz_Session::_param('error_code');
-		Minz_Session::_param('error_logs');
+		$code_int = Base_Session::param('error_code', 404);
+		$error_logs = Base_Session::param('error_logs', array());
+		Base_Session::_param('error_code');
+		Base_Session::_param('error_logs');
 
 		switch ($code_int) {
 		case 200 :
@@ -48,6 +48,6 @@ class RSSServer_error_Controller extends Minz_ActionController {
 			$this->view->errorMessage = $error_message;
 		}
 
-		Minz_View::prependTitle($this->view->code . ' · ');
+		Base_View::prependTitle($this->view->code . ' · ');
 	}
 }

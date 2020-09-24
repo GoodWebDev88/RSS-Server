@@ -70,9 +70,9 @@ return array(
 			'nok' => 'De voor Unicode aanbevolen bibliotheek mbstring kan niet worden gevonden.',
 			'ok' => 'De voor Unicode aanbevolen bibliotheek mbstring is gevonden.',
 		),
-		'minz' => array(
-			'nok' => 'U mist Minz framework.',
-			'ok' => 'U hebt Minz framework.',
+		'base' => array(
+			'nok' => 'U mist Base template.',
+			'ok' => 'U hebt Base template.',
 		),
 		'pcre' => array(
 			'nok' => 'U mist de benodigde bibliotheek voor regular expressions (php-pcre).',

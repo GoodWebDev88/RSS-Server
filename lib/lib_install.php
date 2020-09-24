@@ -2,12 +2,12 @@
 
 define('BCRYPT_COST', 9);
 
-Minz_Configuration::register('default_system', join_path(RSSSERVER_PATH, 'config.default.php'));
-Minz_Configuration::register('default_user', join_path(RSSSERVER_PATH, 'config-user.default.php'));
+Base_Configuration::register('default_system', join_path(RSSSERVER_PATH, 'config.default.php'));
+Base_Configuration::register('default_user', join_path(RSSSERVER_PATH, 'config-user.default.php'));
 
 function checkRequirements($dbType = '') {
 	$php = version_compare(PHP_VERSION, '5.6.0') >= 0;
-	$minz = file_exists(join_path(LIB_PATH, 'Minz'));
+	$base = file_exists(join_path(LIB_PATH, 'Base'));
 	$curl = extension_loaded('curl');
 	$pdo_mysql = extension_loaded('pdo_mysql');
 	$pdo_sqlite = extension_loaded('pdo_sqlite');
@@ -50,7 +50,7 @@ function checkRequirements($dbType = '') {
 
 	return array(
 		'php' => $php ? 'ok' : 'ko',
-		'minz' => $minz ? 'ok' : 'ko',
+		'base' => $base ? 'ok' : 'ko',
 		'curl' => $curl ? 'ok' : 'ko',
 		'pdo-mysql' => $pdo_mysql ? 'ok' : 'ko',
 		'pdo-sqlite' => $pdo_sqlite ? 'ok' : 'ko',
@@ -69,7 +69,7 @@ function checkRequirements($dbType = '') {
 		'favicons' => $favicons ? 'ok' : 'ko',
 		'http_referer' => $http_referer ? 'ok' : 'ko',
 		'message' => $message ?: 'ok',
-		'all' => $php && $minz && $curl && $pdo && $pcre && $ctype && $dom && $xml &&
+		'all' => $php && $base && $curl && $pdo && $pcre && $ctype && $dom && $xml &&
 		         $data && $cache && $users && $favicons && $http_referer && $message == '' ? 'ok' : 'ko'
 	);
 }
@@ -85,11 +85,11 @@ function initDb() {
 		$db['pdo_options'] = [];
 	}
 	$db['pdo_options'][PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
-	$conf->db = $db;	//TODO: Remove this Minz limitation "Indirect modification of overloaded property"
+	$conf->db = $db;	//TODO: Remove this Base limitation "Indirect modification of overloaded property"
 
 	//Attempt to auto-create database if it does not already exist
 	if ($db['type'] !== 'sqlite') {
-		Minz_ModelPdo::$usesSharedPdo = false;
+		Base_ModelPdo::$usesSharedPdo = false;
 		$dbBase = isset($db['base']) ? $db['base'] : '';
 		//For first connection, use default database for PostgreSQL, empty database for MySQL / MariaDB:
 		$db['base'] = $db['type'] === 'pgsql' ? 'postgres' : '';
@@ -111,7 +111,7 @@ function initDb() {
 
 	//New connection with the database name
 	$databaseDAO = RSSServer_Factory::createDatabaseDAO();
-	Minz_ModelPdo::$usesSharedPdo = true;
+	Base_ModelPdo::$usesSharedPdo = true;
 	return $databaseDAO->testConnection();
 }
 

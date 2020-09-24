@@ -12,7 +12,7 @@
 				if ($this->entry->isRead()) {
 					$arUrl['params']['is_read'] = 0;
 				}
-				?><a class="read" href="<?= Minz_Url::display($arUrl) ?>"><?php
+				?><a class="read" href="<?= Base_Url::display($arUrl) ?>"><?php
 					echo _i($this->entry->isRead() ? 'read' : 'unread'); ?></a><?php
 			?></li><?php
 		}
@@ -22,7 +22,7 @@
 				if ($this->entry->isFavorite()) {
 					$arUrl['params']['is_favorite'] = 0;
 				}
-				?><a class="bookmark" href="<?= Minz_Url::display($arUrl) ?>"><?php
+				?><a class="bookmark" href="<?= Base_Url::display($arUrl) ?>"><?php
 					echo _i($this->entry->isFavorite() ? 'starred' : 'non-starred'); ?></a><?php
 			?></li><?php
 		}

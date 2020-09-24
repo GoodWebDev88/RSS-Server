@@ -7,7 +7,7 @@ require(__DIR__ . '/../cli/_cli.php');
  * writes to syslog (only if simplepie_syslog_enabled in RSSServer configuration) and to STDOUT
  */
 function notice($message) {
-	Minz_Log::notice($message, ADMIN_LOG);
+	Base_Log::notice($message, ADMIN_LOG);
 	if (!COPY_LOG_TO_SYSLOG && SIMPLEPIE_SYSLOG_ENABLED) {
 		syslog(LOG_NOTICE, $message);
 	}
@@ -32,7 +32,7 @@ $_SERVER['HTTP_HOST'] = '';
 
 $app = new RSSServer();
 
-$system_conf = Minz_Configuration::get('system');
+$system_conf = Base_Configuration::get('system');
 $system_conf->auth_type = 'none';  // avoid necessity to be logged in (not saved!)
 define('SIMPLEPIE_SYSLOG_ENABLED', $system_conf->simplepie_syslog_enabled);
 
@@ -59,8 +59,8 @@ foreach ($users as $user) {
 		continue;
 	}
 
-	Minz_Session::_param('currentUser', $user);
-	new Minz_ModelPdo($user);	//TODO: FIXME: Quick-fix while waiting for a better RSSServer() constructor/init
+	Base_Session::_param('currentUser', $user);
+	new Base_ModelPdo($user);	//TODO: FIXME: Quick-fix while waiting for a better RSSServer() constructor/init
 	RSSServer_Auth::giveAccess();
 	$app->init();
 	notice('RSSServer actualize ' . $user . '...');
@@ -68,14 +68,14 @@ foreach ($users as $user) {
 	$app->run();
 
 	if (!invalidateHttpCache()) {
-		Minz_Log::warning('RSSServer write access problem in ' . join_path(USERS_PATH, $user, 'log.txt'), ADMIN_LOG);
+		Base_Log::warning('RSSServer write access problem in ' . join_path(USERS_PATH, $user, 'log.txt'), ADMIN_LOG);
 		if (defined('STDERR')) {
 			fwrite(STDERR, 'RSSServer write access problem in ' . join_path(USERS_PATH, $user, 'log.txt') . "\n");
 		}
 	}
 
-	Minz_Session::_param('currentUser', '_');
-	Minz_Session::_param('loginOk');
+	Base_Session::_param('currentUser', '_');
+	Base_Session::_param('loginOk');
 	gc_collect_cycles();
 }
 

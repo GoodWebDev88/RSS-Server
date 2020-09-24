@@ -1,6 +1,6 @@
 <?php
 
-class RSSServer_Themes extends Minz_Model {
+class RSSServer_Themes extends Base_Model {
 	private static $themesUrl = '/themes/';
 	private static $defaultIconsUrl = '/themes/icons/';
 	public static $defaultTheme = 'Origine';
@@ -118,6 +118,6 @@ class RSSServer_Themes extends Minz_Model {
 		$url = $name . '.svg';
 		$url = isset(self::$themeIcons[$url]) ? (self::$themeIconsUrl . $url) : (self::$defaultIconsUrl . $url);
 
-		return $urlOnly ? Minz_Url::display($url) : '<img class="icon" src="' . Minz_Url::display($url) . '" alt="' . $alt . '" />';
+		return $urlOnly ? Base_Url::display($url) : '<img class="icon" src="' . Base_Url::display($url) . '" alt="' . $alt . '" />';
 	}
 }

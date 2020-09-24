@@ -4,10 +4,6 @@
 Server-side API compatible with Google Reader API layer 2
 	for the RSSServer project https://rssserver.org
 
-== Credits ==
-* 2014-03: Released by Alexandre Alapetite https://alexandre.alapetite.fr
-	under GNU AGPL 3 license http://www.gnu.org/licenses/agpl-3.0.html
-
 == Documentation ==
 * http://code.google.com/p/pyrfeed/wiki/GoogleReaderAPI
 * http://web.archive.org/web/20130718025427/http://undoc.in/
@@ -103,14 +99,14 @@ function debugInfo() {
 }
 
 function badRequest() {
-	Minz_Log::warning('badRequest() ' . debugInfo(), API_LOG);
+	Base_Log::warning('badRequest() ' . debugInfo(), API_LOG);
 	header('HTTP/1.1 400 Bad Request');
 	header('Content-Type: text/plain; charset=UTF-8');
 	die('Bad Request!');
 }
 
 function unauthorized() {
-	Minz_Log::warning('unauthorized() ' . debugInfo(), API_LOG);
+	Base_Log::warning('unauthorized() ' . debugInfo(), API_LOG);
 	header('HTTP/1.1 401 Unauthorized');
 	header('Content-Type: text/plain; charset=UTF-8');
 	header('Google-Bad-Token: true');
@@ -118,21 +114,21 @@ function unauthorized() {
 }
 
 function notImplemented() {
-	Minz_Log::warning('notImplemented() ' . debugInfo(), API_LOG);
+	Base_Log::warning('notImplemented() ' . debugInfo(), API_LOG);
 	header('HTTP/1.1 501 Not Implemented');
 	header('Content-Type: text/plain; charset=UTF-8');
 	die('Not Implemented!');
 }
 
 function serviceUnavailable() {
-	Minz_Log::warning('serviceUnavailable() ' . debugInfo(), API_LOG);
+	Base_Log::warning('serviceUnavailable() ' . debugInfo(), API_LOG);
 	header('HTTP/1.1 503 Service Unavailable');
 	header('Content-Type: text/plain; charset=UTF-8');
 	die('Service Unavailable!');
 }
 
 function checkCompatibility() {
-	Minz_Log::warning('checkCompatibility() ' . debugInfo(), API_LOG);
+	Base_Log::warning('checkCompatibility() ' . debugInfo(), API_LOG);
 	header('Content-Type: text/plain; charset=UTF-8');
 	if (PHP_INT_SIZE < 8 && !function_exists('gmp_init')) {
 		die('FAIL 64-bit or GMP extension! Wrong PHP configuration.');
@@ -154,14 +150,14 @@ function authorizationToUser() {
 			if (RSSServer_user_Controller::checkUsername($user)) {
 				RSSServer_Context::$user_conf = get_user_configuration($user);
 				if (RSSServer_Context::$user_conf == null) {
-					Minz_Log::warning('Invalid API user ' . $user . ': configuration cannot be found.');
+					Base_Log::warning('Invalid API user ' . $user . ': configuration cannot be found.');
 					unauthorized();
 				}
 				if ($headerAuthX[1] === sha1(RSSServer_Context::$system_conf->salt . $user . RSSServer_Context::$user_conf->apiPasswordHash)) {
 					return $user;
 				} else {
-					Minz_Log::warning('Invalid API authorisation for user ' . $user . ': ' . $headerAuthX[1], API_LOG);
-					Minz_Log::warning('Invalid API authorisation for user ' . $user . ': ' . $headerAuthX[1]);
+					Base_Log::warning('Invalid API authorisation for user ' . $user . ': ' . $headerAuthX[1], API_LOG);
+					Base_Log::warning('Invalid API authorisation for user ' . $user . ': ' . $headerAuthX[1]);
 					unauthorized();
 				}
 			} else {
@@ -176,7 +172,7 @@ function clientLogin($email, $pass) {	//http://web.archive.org/web/2013060409104
 	if (RSSServer_user_Controller::checkUsername($email)) {
 		RSSServer_Context::$user_conf = get_user_configuration($email);
 		if (RSSServer_Context::$user_conf == null) {
-			Minz_Log::warning('Invalid API user ' . $email . ': configuration cannot be found.');
+			Base_Log::warning('Invalid API user ' . $email . ': configuration cannot be found.');
 			unauthorized();
 		}
 
@@ -188,7 +184,7 @@ function clientLogin($email, $pass) {	//http://web.archive.org/web/2013060409104
 				'Auth=', $auth, "\n";
 			exit();
 		} else {
-			Minz_Log::warning('Password API mismatch for user ' . $email);
+			Base_Log::warning('Password API mismatch for user ' . $email);
 			unauthorized();
 		}
 	} else {
@@ -200,8 +196,8 @@ function clientLogin($email, $pass) {	//http://web.archive.org/web/2013060409104
 function token($conf) {
 //http://blog.martindoms.com/2009/08/15/using-the-google-reader-api-part-1/
 //https://github.com/ericmann/gReader-Library/blob/master/greader.class.php
-	$user = Minz_Session::param('currentUser', '_');
-	//Minz_Log::debug('token('. $user . ')', API_LOG);	//TODO: Implement real token that expires
+	$user = Base_Session::param('currentUser', '_');
+	//Base_Log::debug('token('. $user . ')', API_LOG);	//TODO: Implement real token that expires
 	$token = str_pad(sha1(RSSServer_Context::$system_conf->salt . $user . $conf->apiPasswordHash), 57, 'Z');	//Must have 57 characters
 	echo $token, "\n";
 	exit();
@@ -209,7 +205,7 @@ function token($conf) {
 
 function checkToken($conf, $token) {
 //http://code.google.com/p/google-reader-api/wiki/ActionToken
-	$user = Minz_Session::param('currentUser', '_');
+	$user = Base_Session::param('currentUser', '_');
 	if ($user !== '_' && (	//TODO: Check security consequences
 		$token == '' || //FeedMe
 		$token === 'x')) { //Reeder
@@ -218,12 +214,12 @@ function checkToken($conf, $token) {
 	if ($token === str_pad(sha1(RSSServer_Context::$system_conf->salt . $user . $conf->apiPasswordHash), 57, 'Z')) {
 		return true;
 	}
-	Minz_Log::warning('Invalid POST token: ' . $token, API_LOG);
+	Base_Log::warning('Invalid POST token: ' . $token, API_LOG);
 	unauthorized();
 }
 
 function userInfo() {	//https://github.com/theoldreader/api#user-info
-	$user = Minz_Session::param('currentUser', '_');
+	$user = Base_Session::param('currentUser', '_');
 	exit(json_encode(array(
 			'userId' => $user,
 			'userName' => $user,
@@ -269,7 +265,7 @@ function subscriptionList() {
 	header('Content-Type: application/json; charset=UTF-8');
 
 	$salt = RSSServer_Context::$system_conf->salt;
-	$faviconsUrl = Minz_Url::display('/f.php?', '', true);
+	$faviconsUrl = Base_Url::display('/f.php?', '', true);
 	$faviconsUrl = str_replace('/api/greader.php/reader/api/0/subscription', '', $faviconsUrl);	//Security if base_url is not set properly
 	$subscriptions = array();
 
@@ -318,7 +314,7 @@ function subscriptionEdit($streamNames, $titles, $action, $add = '', $remove = '
 		if (strpos($add, 'user/-/label/') === 0) {
 			$c_name = substr($add, 13);
 		} else {
-			$user = Minz_Session::param('currentUser', '_');
+			$user = Base_Session::param('currentUser', '_');
 			$prefix = 'user/' . $user . '/label/';
 			if (strpos($add, $prefix) === 0) {
 				$c_name = substr($add, strlen($prefix));
@@ -361,7 +357,7 @@ function subscriptionEdit($streamNames, $titles, $action, $add = '', $remove = '
 							$feed = RSSServer_feed_Controller::addFeed($streamUrl, $title, $addCatId, $c_name, $http_auth);
 							continue 2;
 						} catch (Exception $e) {
-							Minz_Log::error('subscriptionEdit error subscribe: ' . $e->getMessage(), API_LOG);
+							Base_Log::error('subscriptionEdit error subscribe: ' . $e->getMessage(), API_LOG);
 						}
 					}
 					badRequest();
@@ -398,7 +394,7 @@ function quickadd($url) {
 				'streamId' => $feed->id(),
 			), JSON_OPTIONS));
 	} catch (Exception $e) {
-		Minz_Log::error('quickadd error: ' . $e->getMessage(), API_LOG);
+		Base_Log::error('quickadd error: ' . $e->getMessage(), API_LOG);
 		die(json_encode(array(
 				'numResults' => 0,
 				'error' => $e->getMessage(),
@@ -478,7 +474,7 @@ function entriesToArray($entries) {
 
 	$items = array();
 	foreach ($entries as $item) {
-		$entry = Minz_ExtensionManager::callHook('entry_before_display', $item);
+		$entry = Base_ExtensionManager::callHook('entry_before_display', $item);
 		if ($entry == null) {
 			continue;
 		}
@@ -781,7 +777,7 @@ function editTag($e_ids, $a, $r) {
 			if (strpos($a, 'user/-/label/') === 0) {
 				$tagName = substr($a, 13);
 			} else {
-				$user = Minz_Session::param('currentUser', '_');
+				$user = Base_Session::param('currentUser', '_');
 				$prefix = 'user/' . $user . '/label/';
 				if (strpos($a, $prefix) === 0) {
 					$tagName = substr($a, strlen($prefix));
@@ -911,13 +907,13 @@ if (count($pathInfos) < 3) {
 	badRequest();
 }
 
-Minz_Configuration::register('system',
+Base_Configuration::register('system',
 	DATA_PATH . '/config.php',
 	RSSSERVER_PATH . '/config.default.php');
-RSSServer_Context::$system_conf = Minz_Configuration::get('system');
+RSSServer_Context::$system_conf = Base_Configuration::get('system');
 
-//Minz_Log::debug('----------------------------------------------------------------', API_LOG);
-//Minz_Log::debug(debugInfo(), API_LOG);
+//Base_Log::debug('----------------------------------------------------------------', API_LOG);
+//Base_Log::debug(debugInfo(), API_LOG);
 
 if (!RSSServer_Context::$system_conf->api_enabled) {
 	serviceUnavailable();
@@ -927,24 +923,24 @@ if (!RSSServer_Context::$system_conf->api_enabled) {
 
 ini_set('session.use_cookies', '0');
 register_shutdown_function('session_destroy');
-Minz_Session::init('RSSServer');
+Base_Session::init('RSSServer');
 
 $user = $pathInfos[1] === 'accounts' ? '' : authorizationToUser();
 RSSServer_Context::$user_conf = null;
 if ($user !== '') {
 	RSSServer_Context::$user_conf = get_user_configuration($user);
-	Minz_ExtensionManager::init();
+	Base_ExtensionManager::init();
 	if (RSSServer_Context::$user_conf != null) {
-		Minz_Translate::init(RSSServer_Context::$user_conf->language);
-		Minz_ExtensionManager::enableByList(RSSServer_Context::$user_conf->extensions_enabled);
+		Base_Translate::init(RSSServer_Context::$user_conf->language);
+		Base_ExtensionManager::enableByList(RSSServer_Context::$user_conf->extensions_enabled);
 	} else {
-		Minz_Translate::init();
+		Base_Translate::init();
 	}
 } else {
-	Minz_Translate::init();
+	Base_Translate::init();
 }
 
-Minz_Session::_param('currentUser', $user);
+Base_Session::_param('currentUser', $user);
 
 if ($pathInfos[1] === 'accounts') {
 	if (($pathInfos[2] === 'ClientLogin') && isset($_REQUEST['Email']) && isset($_REQUEST['Passwd'])) {

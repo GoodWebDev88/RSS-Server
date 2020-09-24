@@ -1,6 +1,6 @@
 <?php
 
-class RSSServer_Entry extends Minz_Model {
+class RSSServer_Entry extends Base_Model {
 	const STATE_READ = 1;
 	const STATE_NOT_READ = 2;
 	const STATE_ALL = 3;
@@ -353,7 +353,7 @@ class RSSServer_Entry extends Minz_Model {
 	}
 
 	public static function getContentByParsing($url, $path, $attributes = array(), $maxRedirs = 3) {
-		$system_conf = Minz_Configuration::get('system');
+		$system_conf = Base_Configuration::get('system');
 		$limits = $system_conf->limits;
 		$feed_timeout = empty($attributes['timeout']) ? 0 : intval($attributes['timeout']);
 
@@ -386,7 +386,7 @@ class RSSServer_Entry extends Minz_Model {
 		curl_close($ch);
 
 		if ($c_status != 200 || $c_error != '') {
-			Minz_Log::warning('Error fetching content: HTTP code ' . $c_status . ': ' . $c_error . ' ' . $url);
+			Base_Log::warning('Error fetching content: HTTP code ' . $c_status . ': ' . $c_error . ' ' . $url);
 		}
 
 		if ($html) {
@@ -441,7 +441,7 @@ class RSSServer_Entry extends Minz_Model {
 					}
 				} catch (Exception $e) {
 					// rien à faire, on garde l'ancien contenu(requête a échoué)
-					Minz_Log::warning($e->getMessage());
+					Base_Log::warning($e->getMessage());
 				}
 			}
 		}

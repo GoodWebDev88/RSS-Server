@@ -3,15 +3,15 @@
 /**
  * Controller to handle every configuration options.
  */
-class RSSServer_configure_Controller extends Minz_ActionController {
+class RSSServer_configure_Controller extends Base_ActionController {
 	/**
 	 * This action is called before every other action in that class. It is
 	 * the common boiler plate for every action. It is triggered by the
-	 * underlying framework.
+	 * underlying BASE template.
 	 */
 	public function firstAction() {
 		if (!RSSServer_Auth::hasAccess()) {
-			Minz_Error::error(403);
+			Base_Error::error(403);
 		}
 	}
 
@@ -40,36 +40,36 @@ class RSSServer_configure_Controller extends Minz_ActionController {
 	 * Default values are false unless specified.
 	 */
 	public function displayAction() {
-		if (Minz_Request::isPost()) {
-			RSSServer_Context::$user_conf->language = Minz_Request::param('language', 'en');
-			RSSServer_Context::$user_conf->theme = Minz_Request::param('theme', RSSServer_Themes::$defaultTheme);
-			RSSServer_Context::$user_conf->content_width = Minz_Request::param('content_width', 'thin');
-			RSSServer_Context::$user_conf->topline_read = Minz_Request::param('topline_read', false);
-			RSSServer_Context::$user_conf->topline_favorite = Minz_Request::param('topline_favorite', false);
-			RSSServer_Context::$user_conf->topline_date = Minz_Request::param('topline_date', false);
-			RSSServer_Context::$user_conf->topline_link = Minz_Request::param('topline_link', false);
-			RSSServer_Context::$user_conf->topline_display_authors = Minz_Request::param('topline_display_authors', false);
-			RSSServer_Context::$user_conf->bottomline_read = Minz_Request::param('bottomline_read', false);
-			RSSServer_Context::$user_conf->bottomline_favorite = Minz_Request::param('bottomline_favorite', false);
-			RSSServer_Context::$user_conf->bottomline_sharing = Minz_Request::param('bottomline_sharing', false);
-			RSSServer_Context::$user_conf->bottomline_tags = Minz_Request::param('bottomline_tags', false);
-			RSSServer_Context::$user_conf->bottomline_date = Minz_Request::param('bottomline_date', false);
-			RSSServer_Context::$user_conf->bottomline_link = Minz_Request::param('bottomline_link', false);
-			RSSServer_Context::$user_conf->html5_notif_timeout = Minz_Request::param('html5_notif_timeout', 0);
-			RSSServer_Context::$user_conf->show_nav_buttons = Minz_Request::param('show_nav_buttons', false);
+		if (Base_Request::isPost()) {
+			RSSServer_Context::$user_conf->language = Base_Request::param('language', 'en');
+			RSSServer_Context::$user_conf->theme = Base_Request::param('theme', RSSServer_Themes::$defaultTheme);
+			RSSServer_Context::$user_conf->content_width = Base_Request::param('content_width', 'thin');
+			RSSServer_Context::$user_conf->topline_read = Base_Request::param('topline_read', false);
+			RSSServer_Context::$user_conf->topline_favorite = Base_Request::param('topline_favorite', false);
+			RSSServer_Context::$user_conf->topline_date = Base_Request::param('topline_date', false);
+			RSSServer_Context::$user_conf->topline_link = Base_Request::param('topline_link', false);
+			RSSServer_Context::$user_conf->topline_display_authors = Base_Request::param('topline_display_authors', false);
+			RSSServer_Context::$user_conf->bottomline_read = Base_Request::param('bottomline_read', false);
+			RSSServer_Context::$user_conf->bottomline_favorite = Base_Request::param('bottomline_favorite', false);
+			RSSServer_Context::$user_conf->bottomline_sharing = Base_Request::param('bottomline_sharing', false);
+			RSSServer_Context::$user_conf->bottomline_tags = Base_Request::param('bottomline_tags', false);
+			RSSServer_Context::$user_conf->bottomline_date = Base_Request::param('bottomline_date', false);
+			RSSServer_Context::$user_conf->bottomline_link = Base_Request::param('bottomline_link', false);
+			RSSServer_Context::$user_conf->html5_notif_timeout = Base_Request::param('html5_notif_timeout', 0);
+			RSSServer_Context::$user_conf->show_nav_buttons = Base_Request::param('show_nav_buttons', false);
 			RSSServer_Context::$user_conf->save();
 
-			Minz_Session::_param('language', RSSServer_Context::$user_conf->language);
-			Minz_Translate::reset(RSSServer_Context::$user_conf->language);
+			Base_Session::_param('language', RSSServer_Context::$user_conf->language);
+			Base_Translate::reset(RSSServer_Context::$user_conf->language);
 			invalidateHttpCache();
 
-			Minz_Request::good(_t('feedback.conf.updated'),
+			Base_Request::good(_t('feedback.conf.updated'),
 			                   array('c' => 'configure', 'a' => 'display'));
 		}
 
 		$this->view->themes = RSSServer_Themes::get();
 
-		Minz_View::prependTitle(_t('conf.display.title') . ' · ');
+		Base_View::prependTitle(_t('conf.display.title') . ' · ');
 	}
 
 	/**
@@ -101,37 +101,37 @@ class RSSServer_configure_Controller extends Minz_ActionController {
 	 * Default values are false unless specified.
 	 */
 	public function readingAction() {
-		if (Minz_Request::isPost()) {
-			RSSServer_Context::$user_conf->posts_per_page = Minz_Request::param('posts_per_page', 10);
-			RSSServer_Context::$user_conf->view_mode = Minz_Request::param('view_mode', 'normal');
-			RSSServer_Context::$user_conf->default_view = Minz_Request::param('default_view', 'adaptive');
-			RSSServer_Context::$user_conf->show_fav_unread = Minz_Request::param('show_fav_unread', false);
-			RSSServer_Context::$user_conf->auto_load_more = Minz_Request::param('auto_load_more', false);
-			RSSServer_Context::$user_conf->display_posts = Minz_Request::param('display_posts', false);
-			RSSServer_Context::$user_conf->display_categories = Minz_Request::param('display_categories', 'active');
-			RSSServer_Context::$user_conf->hide_read_feeds = Minz_Request::param('hide_read_feeds', false);
-			RSSServer_Context::$user_conf->onread_jump_next = Minz_Request::param('onread_jump_next', false);
-			RSSServer_Context::$user_conf->lazyload = Minz_Request::param('lazyload', false);
-			RSSServer_Context::$user_conf->sides_close_article = Minz_Request::param('sides_close_article', false);
-			RSSServer_Context::$user_conf->sticky_post = Minz_Request::param('sticky_post', false);
-			RSSServer_Context::$user_conf->reading_confirm = Minz_Request::param('reading_confirm', false);
-			RSSServer_Context::$user_conf->auto_remove_article = Minz_Request::param('auto_remove_article', false);
-			RSSServer_Context::$user_conf->mark_updated_article_unread = Minz_Request::param('mark_updated_article_unread', false);
-			RSSServer_Context::$user_conf->sort_order = Minz_Request::param('sort_order', 'DESC');
+		if (Base_Request::isPost()) {
+			RSSServer_Context::$user_conf->posts_per_page = Base_Request::param('posts_per_page', 10);
+			RSSServer_Context::$user_conf->view_mode = Base_Request::param('view_mode', 'normal');
+			RSSServer_Context::$user_conf->default_view = Base_Request::param('default_view', 'adaptive');
+			RSSServer_Context::$user_conf->show_fav_unread = Base_Request::param('show_fav_unread', false);
+			RSSServer_Context::$user_conf->auto_load_more = Base_Request::param('auto_load_more', false);
+			RSSServer_Context::$user_conf->display_posts = Base_Request::param('display_posts', false);
+			RSSServer_Context::$user_conf->display_categories = Base_Request::param('display_categories', 'active');
+			RSSServer_Context::$user_conf->hide_read_feeds = Base_Request::param('hide_read_feeds', false);
+			RSSServer_Context::$user_conf->onread_jump_next = Base_Request::param('onread_jump_next', false);
+			RSSServer_Context::$user_conf->lazyload = Base_Request::param('lazyload', false);
+			RSSServer_Context::$user_conf->sides_close_article = Base_Request::param('sides_close_article', false);
+			RSSServer_Context::$user_conf->sticky_post = Base_Request::param('sticky_post', false);
+			RSSServer_Context::$user_conf->reading_confirm = Base_Request::param('reading_confirm', false);
+			RSSServer_Context::$user_conf->auto_remove_article = Base_Request::param('auto_remove_article', false);
+			RSSServer_Context::$user_conf->mark_updated_article_unread = Base_Request::param('mark_updated_article_unread', false);
+			RSSServer_Context::$user_conf->sort_order = Base_Request::param('sort_order', 'DESC');
 			RSSServer_Context::$user_conf->mark_when = array(
-				'article' => Minz_Request::param('mark_open_article', false),
-				'site' => Minz_Request::param('mark_open_site', false),
-				'scroll' => Minz_Request::param('mark_scroll', false),
-				'reception' => Minz_Request::param('mark_upon_reception', false),
+				'article' => Base_Request::param('mark_open_article', false),
+				'site' => Base_Request::param('mark_open_site', false),
+				'scroll' => Base_Request::param('mark_scroll', false),
+				'reception' => Base_Request::param('mark_upon_reception', false),
 			);
 			RSSServer_Context::$user_conf->save();
 			invalidateHttpCache();
 
-			Minz_Request::good(_t('feedback.conf.updated'),
+			Base_Request::good(_t('feedback.conf.updated'),
 			                   array('c' => 'configure', 'a' => 'reading'));
 		}
 
-		Minz_View::prependTitle(_t('conf.reading.title') . ' · ');
+		Base_View::prependTitle(_t('conf.reading.title') . ' · ');
 	}
 
 	/**
@@ -145,17 +145,17 @@ class RSSServer_configure_Controller extends Minz_ActionController {
 	 * some unwanted behavior when the end-user was using an ad-blocker.
 	 */
 	public function integrationAction() {
-		if (Minz_Request::isPost()) {
-			$params = Minz_Request::fetchPOST();
+		if (Base_Request::isPost()) {
+			$params = Base_Request::fetchPOST();
 			RSSServer_Context::$user_conf->sharing = $params['share'];
 			RSSServer_Context::$user_conf->save();
 			invalidateHttpCache();
 
-			Minz_Request::good(_t('feedback.conf.updated'),
+			Base_Request::good(_t('feedback.conf.updated'),
 			                   array('c' => 'configure', 'a' => 'integration'));
 		}
 
-		Minz_View::prependTitle(_t('conf.sharing.title') . ' · ');
+		Base_View::prependTitle(_t('conf.sharing.title') . ' · ');
 	}
 
 	/**
@@ -173,17 +173,17 @@ class RSSServer_configure_Controller extends Minz_ActionController {
 	public function shortcutAction() {
 		$this->view->list_keys = SHORTCUT_KEYS;
 
-		if (Minz_Request::isPost()) {
-			RSSServer_Context::$user_conf->shortcuts = validateShortcutList(Minz_Request::param('shortcuts'));
+		if (Base_Request::isPost()) {
+			RSSServer_Context::$user_conf->shortcuts = validateShortcutList(Base_Request::param('shortcuts'));
 			RSSServer_Context::$user_conf->save();
 			invalidateHttpCache();
 
-			Minz_Request::good(_t('feedback.conf.shortcuts_updated'), array('c' => 'configure', 'a' => 'shortcut'));
+			Base_Request::good(_t('feedback.conf.shortcuts_updated'), array('c' => 'configure', 'a' => 'shortcut'));
 		} else {
 			RSSServer_Context::$user_conf->shortcuts = validateShortcutList(RSSServer_Context::$user_conf->shortcuts);
 		}
 
-		Minz_View::prependTitle(_t('conf.shortcut.title') . ' · ');
+		Base_View::prependTitle(_t('conf.shortcut.title') . ' · ');
 	}
 
 	/**
@@ -199,36 +199,36 @@ class RSSServer_configure_Controller extends Minz_ActionController {
 	 *   - refresh frequency (default: 0)
 	 */
 	public function archivingAction() {
-		if (Minz_Request::isPost()) {
-			if (!Minz_Request::paramBoolean('enable_keep_max')) {
+		if (Base_Request::isPost()) {
+			if (!Base_Request::paramBoolean('enable_keep_max')) {
 				$keepMax = false;
-			} elseif (!$keepMax = Minz_Request::param('keep_max')) {
+			} elseif (!$keepMax = Base_Request::param('keep_max')) {
 				$keepMax = RSSServer_Feed::ARCHIVING_RETENTION_COUNT_LIMIT;
 			}
-			if ($enableRetentionPeriod = Minz_Request::paramBoolean('enable_keep_period')) {
+			if ($enableRetentionPeriod = Base_Request::paramBoolean('enable_keep_period')) {
 				$keepPeriod = RSSServer_Feed::ARCHIVING_RETENTION_PERIOD;
-				if (is_numeric(Minz_Request::param('keep_period_count')) && preg_match('/^PT?1[YMWDH]$/', Minz_Request::param('keep_period_unit'))) {
-					$keepPeriod = str_replace('1', Minz_Request::param('keep_period_count'), Minz_Request::param('keep_period_unit'));
+				if (is_numeric(Base_Request::param('keep_period_count')) && preg_match('/^PT?1[YMWDH]$/', Base_Request::param('keep_period_unit'))) {
+					$keepPeriod = str_replace('1', Base_Request::param('keep_period_count'), Base_Request::param('keep_period_unit'));
 				}
 			} else {
 				$keepPeriod = false;
 			}
 
-			RSSServer_Context::$user_conf->ttl_default = Minz_Request::param('ttl_default', RSSServer_Feed::TTL_DEFAULT);
+			RSSServer_Context::$user_conf->ttl_default = Base_Request::param('ttl_default', RSSServer_Feed::TTL_DEFAULT);
 			RSSServer_Context::$user_conf->archiving = [
 				'keep_period' => $keepPeriod,
 				'keep_max' => $keepMax,
-				'keep_min' => Minz_Request::param('keep_min_default', 0),
-				'keep_favourites' => Minz_Request::paramBoolean('keep_favourites'),
-				'keep_labels' => Minz_Request::paramBoolean('keep_labels'),
-				'keep_unreads' => Minz_Request::paramBoolean('keep_unreads'),
+				'keep_min' => Base_Request::param('keep_min_default', 0),
+				'keep_favourites' => Base_Request::paramBoolean('keep_favourites'),
+				'keep_labels' => Base_Request::paramBoolean('keep_labels'),
+				'keep_unreads' => Base_Request::paramBoolean('keep_unreads'),
 			];
 			RSSServer_Context::$user_conf->keep_history_default = null;	//Legacy < RSSServer 1.15
 			RSSServer_Context::$user_conf->old_entries = null;	//Legacy < RSSServer 1.15
 			RSSServer_Context::$user_conf->save();
 			invalidateHttpCache();
 
-			Minz_Request::good(_t('feedback.conf.updated'),
+			Base_Request::good(_t('feedback.conf.updated'),
 			                   array('c' => 'configure', 'a' => 'archiving'));
 		}
 
@@ -257,7 +257,7 @@ class RSSServer_configure_Controller extends Minz_ActionController {
 			$this->view->size_total = $databaseDAO->size(true);
 		}
 
-		Minz_View::prependTitle(_t('conf.archiving.title') . ' · ');
+		Base_View::prependTitle(_t('conf.archiving.title') . ' · ');
 	}
 
 	/**
@@ -274,8 +274,8 @@ class RSSServer_configure_Controller extends Minz_ActionController {
 		$category_dao = RSSServer_Factory::createCategoryDao();
 		$feed_dao = RSSServer_Factory::createFeedDao();
 		$tag_dao = RSSServer_Factory::createTagDao();
-		if (Minz_Request::isPost()) {
-			$params = Minz_Request::param('queries', array());
+		if (Base_Request::isPost()) {
+			$params = Base_Request::param('queries', array());
 
 			foreach ($params as $key => $query) {
 				if (!$query['name']) {
@@ -286,7 +286,7 @@ class RSSServer_configure_Controller extends Minz_ActionController {
 			RSSServer_Context::$user_conf->queries = $queries;
 			RSSServer_Context::$user_conf->save();
 
-			Minz_Request::good(_t('feedback.conf.updated'),
+			Base_Request::good(_t('feedback.conf.updated'),
 			                   array('c' => 'configure', 'a' => 'queries'));
 		} else {
 			$this->view->queries = array();
@@ -295,7 +295,7 @@ class RSSServer_configure_Controller extends Minz_ActionController {
 			}
 		}
 
-		Minz_View::prependTitle(_t('conf.query.title') . ' · ');
+		Base_View::prependTitle(_t('conf.query.title') . ' · ');
 	}
 
 	/**
@@ -313,15 +313,15 @@ class RSSServer_configure_Controller extends Minz_ActionController {
 		foreach (RSSServer_Context::$user_conf->queries as $key => $query) {
 			$queries[$key] = new RSSServer_UserQuery($query, $feed_dao, $category_dao, $tag_dao);
 		}
-		$params = Minz_Request::fetchGET();
-		$params['url'] = Minz_Url::display(array('params' => $params));
+		$params = Base_Request::fetchGET();
+		$params['url'] = Base_Url::display(array('params' => $params));
 		$params['name'] = _t('conf.query.number', count($queries) + 1);
 		$queries[] = new RSSServer_UserQuery($params, $feed_dao, $category_dao, $tag_dao);
 
 		RSSServer_Context::$user_conf->queries = $queries;
 		RSSServer_Context::$user_conf->save();
 
-		Minz_Request::good(_t('feedback.conf.query_created', $query['name']),
+		Base_Request::good(_t('feedback.conf.query_created', $query['name']),
 		                   array('c' => 'configure', 'a' => 'queries'));
 	}
 
@@ -345,29 +345,29 @@ class RSSServer_configure_Controller extends Minz_ActionController {
 	 */
 	public function systemAction() {
 		if (!RSSServer_Auth::hasAccess('admin')) {
-			Minz_Error::error(403);
+			Base_Error::error(403);
 		}
 
 		$can_enable_email_validation = version_compare(PHP_VERSION, '5.5') >= 0;
 		$this->view->can_enable_email_validation = $can_enable_email_validation;
 
-		if (Minz_Request::isPost()) {
+		if (Base_Request::isPost()) {
 			$limits = RSSServer_Context::$system_conf->limits;
-			$limits['max_registrations'] = Minz_Request::param('max-registrations', 1);
-			$limits['max_feeds'] = Minz_Request::param('max-feeds', 16384);
-			$limits['max_categories'] = Minz_Request::param('max-categories', 16384);
-			$limits['cookie_duration'] = Minz_Request::param('cookie-duration', 2592000);
+			$limits['max_registrations'] = Base_Request::param('max-registrations', 1);
+			$limits['max_feeds'] = Base_Request::param('max-feeds', 16384);
+			$limits['max_categories'] = Base_Request::param('max-categories', 16384);
+			$limits['cookie_duration'] = Base_Request::param('cookie-duration', 2592000);
 			RSSServer_Context::$system_conf->limits = $limits;
-			RSSServer_Context::$system_conf->title = Minz_Request::param('instance-name', 'RSSServer');
-			RSSServer_Context::$system_conf->auto_update_url = Minz_Request::param('auto-update-url', false);
+			RSSServer_Context::$system_conf->title = Base_Request::param('instance-name', 'RSSServer');
+			RSSServer_Context::$system_conf->auto_update_url = Base_Request::param('auto-update-url', false);
 			if ($can_enable_email_validation) {
-				RSSServer_Context::$system_conf->force_email_validation = Minz_Request::param('force-email-validation', false);
+				RSSServer_Context::$system_conf->force_email_validation = Base_Request::param('force-email-validation', false);
 			}
 			RSSServer_Context::$system_conf->save();
 
 			invalidateHttpCache();
 
-			Minz_Session::_param('notification', array(
+			Base_Session::_param('notification', array(
 				'type' => 'good',
 				'content' => _t('feedback.conf.updated')
 			));

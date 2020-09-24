@@ -6,9 +6,8 @@ return array(
 		'agpl3' => '<a href="https://www.gnu.org/licenses/agpl-3.0.html">AGPL 3</a>',	// TODO - Translation
 		'bugs_reports' => 'Hlášení chyb',
 		'credits' => 'Poděkování',
-		'credits_content' => 'Některé designové prvky pocházejí z <a href="http://twitter.github.io/bootstrap/">Bootstrap</a>, RSSServer ale tuto platformu nevyužívá. <a href="https://git.gnome.org/browse/gnome-icon-theme-symbolic">Ikony</a> pocházejí z <a href="https://www.gnome.org/">GNOME projektu</a>. Font <em>Open Sans</em> vytvořil <a href="https://fonts.google.com/specimen/Open+Sans">Steve Matteson</a>. RSSServer je založen na PHP framework <a href="https://github.com/marienfressinaud/MINZ">Minz</a>.',
+		'credits_content' => 'Některé designové prvky pocházejí z <a href="http://twitter.github.io/bootstrap/">Bootstrap</a>, RSSServer ale tuto platformu nevyužívá. <a href="https://git.gnome.org/browse/gnome-icon-theme-symbolic">Ikony</a> pocházejí z <a href="https://www.gnome.org/">GNOME projektu</a>. Font <em>Open Sans</em> vytvořil <a href="https://fonts.google.com/specimen/Open+Sans">Steve Matteson</a>.',
 		'rssserver_description' => 'RSSServer je čtečka RSS kanálů určená k provozu na vlastním serveru, podobná <a href="http://tontof.net/kriss/feed/">Kriss Feed</a> nebo <a href="https://github.com/LeedRSS/Leed">Leed</a>. Je to nenáročný a jednoduchý, zároveň ale mocný a konfigurovatelný nástroj.',
-		'github' => '<a href="https://github.com/RSSServer/RSSServer/issues">na Github</a>',
 		'license' => 'Licence',
 		'project_website' => 'Stránka projektu',
 		'title' => 'O RSSServer',

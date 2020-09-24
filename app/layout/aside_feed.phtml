@@ -1,5 +1,5 @@
 <?php
-	$actual_view = Minz_Request::actionName();
+	$actual_view = Base_Request::actionName();
 	$class = '';
 	if (RSSServer_Context::$user_conf->hide_read_feeds &&
 			RSSServer_Context::isStateEnabled(RSSServer_Entry::STATE_NOT_READ) &&

@@ -1,6 +1,6 @@
 <?php
 
-class RSSServer_StatsDAO extends Minz_ModelPdo {
+class RSSServer_StatsDAO extends Base_ModelPdo {
 
 	const ENTRY_COUNT_PERIOD = 30;
 

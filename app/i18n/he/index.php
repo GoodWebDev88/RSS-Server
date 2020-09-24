@@ -6,9 +6,8 @@ return array(
 		'agpl3' => '<a href="https://www.gnu.org/licenses/agpl-3.0.html">AGPL 3</a>',	// TODO - Translation
 		'bugs_reports' => 'דיווח באגים',
 		'credits' => 'קרדיטים',
-		'credits_content' => 'מאפייני עיצוב מסויימים הגיעו מ <a href="http://twitter.github.io/bootstrap/">Bootstrap</a> אף על פי ש RSSServer אינו משתמש בתשתית הזו. <a href="https://git.gnome.org/browse/gnome-icon-theme-symbolic">סמלילים</a> הגיעו מ <a href="https://www.gnome.org/"> פרוייקט GNOME </a>. <em>Open Sans</em> הגופן police נוצר על ידי <a href="https://www.google.com/webfonts/specimen/Open+Sans">Steve Matteson</a>. Favicons נאספים בעזרת <a href="https://getfavicon.appspot.com/">getFavicon API</a>. RSSServer מבוסס על <a href="https://github.com/marienfressinaud/MINZ">Minz</a>, תשתית PHP.',
+		'credits_content' => 'מאפייני עיצוב מסויימים הגיעו מ <a href="http://twitter.github.io/bootstrap/">Bootstrap</a> אף על פי ש RSSServer אינו משתמש בתשתית הזו. <a href="https://git.gnome.org/browse/gnome-icon-theme-symbolic">סמלילים</a> הגיעו מ <a href="https://www.gnome.org/"> פרוייקט GNOME </a>. <em>Open Sans</em> הגופן police נוצר על ידי <a href="https://www.google.com/webfonts/specimen/Open+Sans">Steve Matteson</a>. Favicons נאספים בעזרת <a href="https://getfavicon.appspot.com/">getFavicon API</a>.',
 		'rssserver_description' => 'RSSServer הוא קורא RSS לאחסון עצמי בדומה ל <a href="http://tontof.net/kriss/feed/">Kriss Feed</a> או <a href="https://github.com/LeedRSS/Leed">Leed</a>. אינו צורך משאבים רבים, וקל לתפעול אך בו בזמן חזק וניתן להתאמה.',
-		'github' => '<a href="https://github.com/RSSServer/RSSServer/issues">בגיטהאב</a>',
 		'license' => 'רישיון',
 		'project_website' => 'אתר',
 		'title' => 'אודות',

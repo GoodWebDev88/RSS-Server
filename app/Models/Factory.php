@@ -7,7 +7,7 @@ class RSSServer_Factory {
 	}
 
 	public static function createCategoryDao($username = null) {
-		$conf = Minz_Configuration::get('system');
+		$conf = Base_Configuration::get('system');
 		switch ($conf->db['type']) {
 			case 'sqlite':
 				return new RSSServer_CategoryDAOSQLite($username);
@@ -17,7 +17,7 @@ class RSSServer_Factory {
 	}
 
 	public static function createFeedDao($username = null) {
-		$conf = Minz_Configuration::get('system');
+		$conf = Base_Configuration::get('system');
 		switch ($conf->db['type']) {
 			case 'sqlite':
 				return new RSSServer_FeedDAOSQLite($username);
@@ -27,7 +27,7 @@ class RSSServer_Factory {
 	}
 
 	public static function createEntryDao($username = null) {
-		$conf = Minz_Configuration::get('system');
+		$conf = Base_Configuration::get('system');
 		switch ($conf->db['type']) {
 			case 'sqlite':
 				return new RSSServer_EntryDAOSQLite($username);
@@ -39,7 +39,7 @@ class RSSServer_Factory {
 	}
 
 	public static function createTagDao($username = null) {
-		$conf = Minz_Configuration::get('system');
+		$conf = Base_Configuration::get('system');
 		switch ($conf->db['type']) {
 			case 'sqlite':
 				return new RSSServer_TagDAOSQLite($username);
@@ -51,7 +51,7 @@ class RSSServer_Factory {
 	}
 
 	public static function createStatsDAO($username = null) {
-		$conf = Minz_Configuration::get('system');
+		$conf = Base_Configuration::get('system');
 		switch ($conf->db['type']) {
 			case 'sqlite':
 				return new RSSServer_StatsDAOSQLite($username);
@@ -63,7 +63,7 @@ class RSSServer_Factory {
 	}
 
 	public static function createDatabaseDAO($username = null) {
-		$conf = Minz_Configuration::get('system');
+		$conf = Base_Configuration::get('system');
 		switch ($conf->db['type']) {
 			case 'sqlite':
 				return new RSSServer_DatabaseDAOSQLite($username);

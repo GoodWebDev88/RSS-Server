@@ -70,9 +70,9 @@ return array(
 			'nok' => 'Ihnen fehlt die mbstring-Bibliothek für Unicode.',
 			'ok' => 'Sie haben die empfohlene mbstring-Bliothek für Unicode.',
 		),
-		'minz' => array(
-			'nok' => 'Ihnen fehlt das Minz-Framework.',
-			'ok' => 'Sie haben das Minz-Framework.',
+		'base' => array(
+			'nok' => 'Ihnen fehlt das Base-Template.',
+			'ok' => 'Sie haben das Base-Template.',
 		),
 		'pcre' => array(
 			'nok' => 'Ihnen fehlt eine benötigte Bibliothek für reguläre Ausdrücke (php-pcre).',

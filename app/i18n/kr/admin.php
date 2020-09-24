@@ -70,9 +70,9 @@ return array(
 			'nok' => '유니코드 지원을 위한 mbstring 라이브러리를 찾을 수 없습니다.',
 			'ok' => '유니코드 지원을 위한 mbstring 라이브러리가 설치되어 있습니다.',
 		),
-		'minz' => array(
-			'nok' => 'Minz 프레임워크를 찾을 수 없습니다.',
-			'ok' => 'Minz 프레임워크가 설치되어 있습니다.',
+		'base' => array(
+			'nok' => 'Base 프레임워크를 찾을 수 없습니다.',
+			'ok' => 'Base 프레임워크가 설치되어 있습니다.',
 		),
 		'pcre' => array(
 			'nok' => '정규표현식을 위한 라이브러리를 찾을 수 없습니다 (php-pcre).',

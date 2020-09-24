@@ -10,7 +10,7 @@ $content_width = RSSServer_Context::$user_conf->content_width;
 
 <div id="stream" class="reader">
 	<div id="new-article">
-		<a href="<?= Minz_Url::display(Minz_Request::currentRequest()) ?>"><?= _t('gen.js.new_article'); /* TODO: move string in JS*/ ?></a>
+		<a href="<?= Base_Url::display(Base_Request::currentRequest()) ?>"><?= _t('gen.js.new_article'); /* TODO: move string in JS*/ ?></a>
 	</div><?php
 	$lastEntry = null;
 	$nbEntries = 0;
@@ -18,7 +18,7 @@ $content_width = RSSServer_Context::$user_conf->content_width;
 		$lastEntry = $item;
 		$nbEntries++;
 		ob_flush();
-		$item = Minz_ExtensionManager::callHook('entry_before_display', $item);
+		$item = Base_ExtensionManager::callHook('entry_before_display', $item);
 		if ($item == null) {
 			continue;
 		}
@@ -37,10 +37,10 @@ $content_width = RSSServer_Context::$user_conf->content_width;
 						$readUrl['params']['is_read'] = 0;
 					}
 				?>
-				<a class="read" href="<?= Minz_Url::display($readUrl) ?>">
+				<a class="read" href="<?= Base_Url::display($readUrl) ?>">
 					<?= _i($item->isRead() ? 'read' : 'unread') ?>
 				</a>
-				<a class="bookmark" href="<?= Minz_Url::display($favoriteUrl) ?>">
+				<a class="bookmark" href="<?= Base_Url::display($favoriteUrl) ?>">
 					<?= _i($item->isFavorite() ? 'starred' : 'non-starred') ?>
 				</a>
 				<a class="website" href="<?= _url('index', 'reader', 'get', 'f_' . $feed->id()) ?>">

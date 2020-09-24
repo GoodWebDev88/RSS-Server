@@ -10,7 +10,7 @@ As a developer, you can run the test suite on your PC easily with `make` command
 $ make test
 ```
 
-This command downloads the PHPUnit binary and verifies its checksum. If the verification fails, the file is deleted. In this case, you should [open an issue on GitHub](https://github.com/RSSServer/RSSServer/issues/new) to let maintainers know about the problem.
+This command downloads the PHPUnit binary and verifies its checksum. If the verification fails, the file is deleted. In this case, you should [open an issue on GitHub] to let maintainers know about the problem.
 
 Then, it executes PHPUnit in a Docker container. If you don't use Docker, you can run the command directly with:
 
@@ -31,4 +31,4 @@ Similarly to PHPUnit, it downloads a [PHP\_CodeSniffer](https://github.com/squiz
 
 Tests are automatically run when you open a pull request on GitHub. It is done with [Travis CI](https://travis-ci.org/RSSServer/RSSServer/). This is done to ensure there is no regressions in your code. We cannot merge a PR if the tests fail so we'll ask you to fix bugs before to review your code.
 
-If you're interested in, you can take a look at [the configuration file](https://github.com/RSSServer/RSSServer/blob/master/.travis.yml).
+If you're interested in, you can take a look at [the configuration file].

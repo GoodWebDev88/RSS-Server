@@ -3,22 +3,22 @@
 /**
  * Controller to handle every entry actions.
  */
-class RSSServer_entry_Controller extends Minz_ActionController {
+class RSSServer_entry_Controller extends Base_ActionController {
 	/**
 	 * This action is called before every other action in that class. It is
 	 * the common boiler plate for every action. It is triggered by the
-	 * underlying framework.
+	 * underlying BASE template.
 	 */
 	public function firstAction() {
 		if (!RSSServer_Auth::hasAccess()) {
-			Minz_Error::error(403);
+			Base_Error::error(403);
 		}
 
 		// If ajax request, we do not print layout
-		$this->ajax = Minz_Request::param('ajax');
+		$this->ajax = Base_Request::param('ajax');
 		if ($this->ajax) {
 			$this->view->_layout(false);
-			Minz_Request::_param('ajax');
+			Base_Request::_param('ajax');
 		}
 	}
 
@@ -36,14 +36,14 @@ class RSSServer_entry_Controller extends Minz_ActionController {
 	 *   - is_read (default: true)
 	 */
 	public function readAction() {
-		$id = Minz_Request::param('id');
-		$get = Minz_Request::param('get');
-		$next_get = Minz_Request::param('nextGet', $get);
-		$id_max = Minz_Request::param('idMax', 0);
-		$is_read = (bool)(Minz_Request::param('is_read', true));
-		RSSServer_Context::$search = new RSSServer_BooleanSearch(Minz_Request::param('search', ''));
+		$id = Base_Request::param('id');
+		$get = Base_Request::param('get');
+		$next_get = Base_Request::param('nextGet', $get);
+		$id_max = Base_Request::param('idMax', 0);
+		$is_read = (bool)(Base_Request::param('is_read', true));
+		RSSServer_Context::$search = new RSSServer_BooleanSearch(Base_Request::param('search', ''));
 
-		RSSServer_Context::$state = Minz_Request::param('state', 0);
+		RSSServer_Context::$state = Base_Request::param('state', 0);
 		if (RSSServer_Context::isStateEnabled(RSSServer_Entry::STATE_FAVORITE)) {
 			RSSServer_Context::$state = RSSServer_Entry::STATE_FAVORITE;
 		} elseif (RSSServer_Context::isStateEnabled(RSSServer_Entry::STATE_NOT_FAVORITE)) {
@@ -58,8 +58,8 @@ class RSSServer_entry_Controller extends Minz_ActionController {
 		$entryDAO = RSSServer_Factory::createEntryDao();
 		if ($id === false) {
 			// id is false? It MUST be a POST request!
-			if (!Minz_Request::isPost()) {
-				Minz_Request::bad(_t('feedback.access.not_found'), array('c' => 'index', 'a' => 'index'));
+			if (!Base_Request::isPost()) {
+				Base_Request::bad(_t('feedback.access.not_found'), array('c' => 'index', 'a' => 'index'));
 				return;
 			}
 
@@ -109,7 +109,7 @@ class RSSServer_entry_Controller extends Minz_ActionController {
 		}
 
 		if (!$this->ajax) {
-			Minz_Request::good(_t($is_read ? 'feedback.sub.articles.marked_read' : 'feedback.sub.articles.marked_unread'),
+			Base_Request::good(_t($is_read ? 'feedback.sub.articles.marked_read' : 'feedback.sub.articles.marked_unread'),
 			array(
 				'c' => 'index',
 				'a' => 'index',
@@ -127,15 +127,15 @@ class RSSServer_entry_Controller extends Minz_ActionController {
 	 * If id is false, nothing happened.
 	 */
 	public function bookmarkAction() {
-		$id = Minz_Request::param('id');
-		$is_favourite = (bool)Minz_Request::param('is_favorite', true);
+		$id = Base_Request::param('id');
+		$is_favourite = (bool)Base_Request::param('is_favorite', true);
 		if ($id !== false) {
 			$entryDAO = RSSServer_Factory::createEntryDao();
 			$entryDAO->markFavorite($id, $is_favourite);
 		}
 
 		if (!$this->ajax) {
-			Minz_Request::forward(array(
+			Base_Request::forward(array(
 				'c' => 'index',
 				'a' => 'index',
 			), true);
@@ -156,8 +156,8 @@ class RSSServer_entry_Controller extends Minz_ActionController {
 			'a' => 'archiving',
 		);
 
-		if (!Minz_Request::isPost()) {
-			Minz_Request::forward($url_redirect, true);
+		if (!Base_Request::isPost()) {
+			Base_Request::forward($url_redirect, true);
 		}
 
 		@set_time_limit(300);
@@ -169,7 +169,7 @@ class RSSServer_entry_Controller extends Minz_ActionController {
 		$feedDAO->updateCachedValues();
 
 		invalidateHttpCache();
-		Minz_Request::good(_t('feedback.admin.optimization_complete'), $url_redirect);
+		Base_Request::good(_t('feedback.admin.optimization_complete'), $url_redirect);
 	}
 
 	/**
@@ -200,7 +200,7 @@ class RSSServer_entry_Controller extends Minz_ActionController {
 		$databaseDAO->minorDbMaintenance();
 
 		invalidateHttpCache();
-		Minz_Request::good(_t('feedback.sub.purge_completed', $nb_total), array(
+		Base_Request::good(_t('feedback.sub.purge_completed', $nb_total), array(
 			'c' => 'configure',
 			'a' => 'archiving'
 		));

@@ -42,7 +42,7 @@ git reset --hard
 git clean -f -d
 ```
 
-Note: If you wish to keep your changes, it's better to [create a pull request](https://github.com/RSSServer/RSSServer/compare) or [an extension](../developers/03_Backend/05_Extensions.md).
+Note: If you wish to keep your changes, it's better to [create a pull request] or [an extension](../developers/03_Backend/05_Extensions.md).
 
 4. Update RSSServer
 ```
@@ -58,7 +58,7 @@ Note: If you want to use the rolling release, the last command is optional.
 git status
 ```
 
-The command should tell you the tag that you're using. It must be the same as the one associated with [the latest release on GitHub](https://github.com/RSSServer/RSSServer/releases/latest). If you use the rolling release, it should tell you that your `master` branch is up to date with `origin`.
+The command should tell you the tag that you're using. It must be the same as the one associated with [the latest release on GitHub]. If you use the rolling release, it should tell you that your `master` branch is up to date with `origin`.
 
 6. Delete the file that triggers the install wizard
 ```
@@ -79,11 +79,11 @@ If your local user doesn't have write access to the RSSServer folder, use a sudo
 cd /usr/share/RSSServer/
 ```
 
-2. Get the link to the Zip archive for [the latest release](https://github.com/RSSServer/RSSServer/releases/latest). It should be something like `https://github.com/RSSServer/RSSServer/archive/1.15.3.zip` (the numbers can change). If you want to use the rolling release, the link is `https://github.com/RSSServer/RSSServer/archive/master.zip`
+2. Get the link to the Zip archive for [the latest release]. It should be something like `https://github.com/RSSServer/RSSServer/archive/1.15.3.zip` (the numbers can change). If you want to use the rolling release, the link is `https://github.com/RSSServer/RSSServer/archive/master.zip`
 
 3. Download and unzip the update file
 ```
-wget -O rssserver.zip https://github.com/RSSServer/RSSServer/archive/1.15.3.zip
+wget -O rssserver.zip https://github.com/RSSServer/RSSServer/archive/1.0.0.zip
 unzip rssserver.zip
 ```
 

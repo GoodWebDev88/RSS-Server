@@ -3,11 +3,11 @@
 /**
  * Controller to handle every feed actions.
  */
-class RSSServer_feed_Controller extends Minz_ActionController {
+class RSSServer_feed_Controller extends Base_ActionController {
 	/**
 	 * This action is called before every other action in that class. It is
 	 * the common boiler plate for every action. It is triggered by the
-	 * underlying framework.
+	 * underlying BASE template.
 	 */
 	public function firstAction() {
 		if (!RSSServer_Auth::hasAccess()) {
@@ -15,13 +15,13 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 			// and CRON task cannot be used with php command so the user can
 			// set a CRON task to refresh his feeds by using token inside url
 			$token = RSSServer_Context::$user_conf->token;
-			$token_param = Minz_Request::param('token', '');
+			$token_param = Base_Request::param('token', '');
 			$token_is_ok = ($token != '' && $token == $token_param);
-			$action = Minz_Request::actionName();
+			$action = Base_Request::actionName();
 			$allow_anonymous_refresh = RSSServer_Context::$system_conf->allow_anonymous_refresh;
 			if ($action !== 'actualize' ||
 					!($allow_anonymous_refresh || $token_is_ok)) {
-				Minz_Error::error(403);
+				Base_Error::error(403);
 			}
 		}
 		$this->updateTTL();
@@ -37,7 +37,7 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 	 * @throws RSSServer_AlreadySubscribed_Exception
 	 * @throws RSSServer_FeedNotAdded_Exception
 	 * @throws RSSServer_Feed_Exception
-	 * @throws Minz_FileNotExistException
+	 * @throws Base_FileNotExistException
 	 */
 	public static function addFeed($url, $title = '', $cat_id = 0, $new_cat_name = '', $http_auth = '') {
 		RSSServer_UserDAO::touch();
@@ -48,7 +48,7 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 		$url = trim($url);
 
 		/** @var $url */
-		$url = Minz_ExtensionManager::callHook('check_url_before_add', $url);
+		$url = Base_ExtensionManager::callHook('check_url_before_add', $url);
 		if (null === $url) {
 			throw new RSSServer_FeedNotAdded_Exception($url, $title);
 		}
@@ -68,7 +68,7 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 
 		$feed = new RSSServer_Feed($url);	//Throws RSSServer_BadUrl_Exception
 		$feed->_httpAuth($http_auth);
-		$feed->load(true);	//Throws RSSServer_Feed_Exception, Minz_FileNotExistException
+		$feed->load(true);	//Throws RSSServer_Feed_Exception, Base_FileNotExistException
 		$feed->_category($cat_id);
 
 		$feedDAO = RSSServer_Factory::createFeedDao();
@@ -77,7 +77,7 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 		}
 
 		/** @var RSSServer_Feed $feed */
-		$feed = Minz_ExtensionManager::callHook('feed_before_insert', $feed);
+		$feed = Base_ExtensionManager::callHook('feed_before_insert', $feed);
 		if ($feed === null) {
 			throw new RSSServer_FeedNotAdded_Exception($url, $feed->name());
 		}
@@ -128,11 +128,11 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 	 * If url_rss is false, nothing happened.
 	 */
 	public function addAction() {
-		$url = Minz_Request::param('url_rss');
+		$url = Base_Request::param('url_rss');
 
 		if ($url === false) {
 			// No url, do nothing
-			Minz_Request::forward(array(
+			Base_Request::forward(array(
 				'c' => 'subscription',
 				'a' => 'index'
 			), true);
@@ -148,24 +148,24 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 		$limits = RSSServer_Context::$system_conf->limits;
 		$this->view->feeds = $feedDAO->listFeeds();
 		if (count($this->view->feeds) >= $limits['max_feeds']) {
-			Minz_Request::bad(_t('feedback.sub.feed.over_max', $limits['max_feeds']),
+			Base_Request::bad(_t('feedback.sub.feed.over_max', $limits['max_feeds']),
 			                  $url_redirect);
 		}
 
-		if (Minz_Request::isPost()) {
-			$cat = Minz_Request::param('category');
+		if (Base_Request::isPost()) {
+			$cat = Base_Request::param('category');
 			$new_cat_name = '';
 			if ($cat === 'nc') {
 				// User want to create a new category, new_category parameter
 				// must exist
-				$new_cat = Minz_Request::param('new_category');
+				$new_cat = Base_Request::param('new_category');
 				$new_cat_name = isset($new_cat['name']) ? trim($new_cat['name']) : '';
 			}
 
 			// HTTP information are useful if feed is protected behind a
 			// HTTP authentication
-			$user = trim(Minz_Request::param('http_user', ''));
-			$pass = Minz_Request::param('http_pass', '');
+			$user = trim(Base_Request::param('http_user', ''));
+			$pass = Base_Request::param('http_pass', '');
 			$http_auth = '';
 			if ($user != '' && $pass != '') {	//TODO: Sanitize
 				$http_auth = $user . ':' . $pass;
@@ -175,28 +175,28 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 				$feed = self::addFeed($url, '', $cat, $new_cat_name, $http_auth);
 			} catch (RSSServer_BadUrl_Exception $e) {
 				// Given url was not a valid url!
-				Minz_Log::warning($e->getMessage());
-				Minz_Request::bad(_t('feedback.sub.feed.invalid_url', $url), $url_redirect);
+				Base_Log::warning($e->getMessage());
+				Base_Request::bad(_t('feedback.sub.feed.invalid_url', $url), $url_redirect);
 			} catch (RSSServer_Feed_Exception $e) {
 				// Something went bad (timeout, server not found, etc.)
-				Minz_Log::warning($e->getMessage());
-				Minz_Request::bad(_t('feedback.sub.feed.internal_problem', _url('index', 'logs')), $url_redirect);
-			} catch (Minz_FileNotExistException $e) {
+				Base_Log::warning($e->getMessage());
+				Base_Request::bad(_t('feedback.sub.feed.internal_problem', _url('index', 'logs')), $url_redirect);
+			} catch (Base_FileNotExistException $e) {
 				// Cache directory doesn't exist!
-				Minz_Log::error($e->getMessage());
-				Minz_Request::bad(_t('feedback.sub.feed.internal_problem', _url('index', 'logs')), $url_redirect);
+				Base_Log::error($e->getMessage());
+				Base_Request::bad(_t('feedback.sub.feed.internal_problem', _url('index', 'logs')), $url_redirect);
 			} catch (RSSServer_AlreadySubscribed_Exception $e) {
-				Minz_Request::bad(_t('feedback.sub.feed.already_subscribed', $e->feedName()), $url_redirect);
+				Base_Request::bad(_t('feedback.sub.feed.already_subscribed', $e->feedName()), $url_redirect);
 			} catch (RSSServer_FeedNotAdded_Exception $e) {
-				Minz_Request::bad(_t('feedback.sub.feed.not_added', $e->feedName()), $url_redirect);
+				Base_Request::bad(_t('feedback.sub.feed.not_added', $e->feedName()), $url_redirect);
 			}
 
 			// Entries are in DB, we redirect to feed configuration page.
 			$url_redirect['params']['id'] = $feed->id();
-			Minz_Request::good(_t('feedback.sub.feed.added', $feed->name()), $url_redirect);
+			Base_Request::good(_t('feedback.sub.feed.added', $feed->name()), $url_redirect);
 		} else {
 			// GET request: we must ask confirmation to user before adding feed.
-			Minz_View::prependTitle(_t('sub.feed.title_add') . ' · ');
+			Base_View::prependTitle(_t('sub.feed.title_add') . ' · ');
 
 			$this->catDAO = RSSServer_Factory::createCategoryDao();
 			$this->view->categories = $this->catDAO->listCategories(false);
@@ -213,7 +213,7 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 			if ($feed) {
 				// Already subscribe so we redirect to the feed configuration page.
 				$url_redirect['params']['id'] = $feed->id();
-				Minz_Request::good(_t('feedback.sub.feed.already_subscribed', $feed->name()), $url_redirect);
+				Base_Request::good(_t('feedback.sub.feed.already_subscribed', $feed->name()), $url_redirect);
 			}
 		}
 	}
@@ -227,15 +227,15 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 	 *   - id (default: false)
 	 */
 	public function truncateAction() {
-		$id = Minz_Request::param('id');
+		$id = Base_Request::param('id');
 		$url_redirect = array(
 			'c' => 'subscription',
 			'a' => 'index',
 			'params' => array('id' => $id)
 		);
 
-		if (!Minz_Request::isPost()) {
-			Minz_Request::forward($url_redirect, true);
+		if (!Base_Request::isPost()) {
+			Base_Request::forward($url_redirect, true);
 		}
 
 		$feedDAO = RSSServer_Factory::createFeedDao();
@@ -243,9 +243,9 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 
 		invalidateHttpCache();
 		if ($n === false) {
-			Minz_Request::bad(_t('feedback.sub.feed.error'), $url_redirect);
+			Base_Request::bad(_t('feedback.sub.feed.error'), $url_redirect);
 		} else {
-			Minz_Request::good(_t('feedback.sub.feed.n_entries_deleted', $n), $url_redirect);
+			Base_Request::good(_t('feedback.sub.feed.n_entries_deleted', $n), $url_redirect);
 		}
 	}
 
@@ -281,7 +281,7 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 		$nb_new_articles = 0;
 		foreach ($feeds as $feed) {
 			/** @var RSSServer_Feed $feed */
-			$feed = Minz_ExtensionManager::callHook('feed_before_actualize', $feed);
+			$feed = Base_ExtensionManager::callHook('feed_before_actualize', $feed);
 			if (null === $feed) {
 				continue;
 			}
@@ -291,8 +291,8 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 			$pubSubHubbubEnabled = $pubsubhubbubEnabledGeneral && $feed->pubSubHubbubEnabled();
 			if ((!$simplePiePush) && (!$feed_id) && $pubSubHubbubEnabled && ($feed->lastUpdate() > $pshbMinAge)) {
 				//$text = 'Skip pull of feed using PubSubHubbub: ' . $url;
-				//Minz_Log::debug($text);
-				//Minz_Log::debug($text, PSHB_LOG);
+				//Base_Log::debug($text);
+				//Base_Log::debug($text, PSHB_LOG);
 				continue;	//When PubSubHubbub is used, do not pull refresh so often
 			}
 
@@ -309,12 +309,12 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 				if ($feed->lastUpdate() + 10 >= $mtime) {
 					continue;	//Nothing newer from other users
 				}
-				//Minz_Log::debug($feed->url(false) . ' was updated at ' . date('c', $mtime) . ' by another user');
+				//Base_Log::debug($feed->url(false) . ' was updated at ' . date('c', $mtime) . ' by another user');
 				//Will take advantage of the newer cache
 			}
 
 			if (!$feed->lock()) {
-				Minz_Log::notice('Feed already being actualized: ' . $feed->url(false));
+				Base_Log::notice('Feed already being actualized: ' . $feed->url(false));
 				continue;
 			}
 
@@ -327,7 +327,7 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 				$newGuids = $simplePie == null ? [] : $feed->loadGuids($simplePie);
 				$entries = $simplePie == null ? [] : $feed->loadEntries($simplePie);
 			} catch (RSSServer_Feed_Exception $e) {
-				Minz_Log::warning($e->getMessage());
+				Base_Log::warning($e->getMessage());
 				$feedDAO->updateLastUpdate($feed->id(), true);
 				$feed->unlock();
 				continue;
@@ -355,7 +355,7 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 							//This entry already exists and is unchanged.
 							$oldGuids[] = $entry->guid();
 						} else {	//This entry already exists but has been updated
-							//Minz_Log::debug('Entry with GUID `' . $entry->guid() . '` updated in feed ' . $feed->url(false) .
+							//Base_Log::debug('Entry with GUID `' . $entry->guid() . '` updated in feed ' . $feed->url(false) .
 								//', old hash ' . $existingHash . ', new hash ' . $entry->hash());
 							$mark_updated_article_unread = $feed->attributes('mark_updated_article_unread') !== null ? (
 									$feed->attributes('mark_updated_article_unread')
@@ -363,7 +363,7 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 							$needFeedCacheRefresh = $mark_updated_article_unread;
 							$entry->_isRead($mark_updated_article_unread ? false : null);	//Change is_read according to policy.
 
-							$entry = Minz_ExtensionManager::callHook('entry_before_insert', $entry);
+							$entry = Base_ExtensionManager::callHook('entry_before_insert', $entry);
 							if ($entry === null) {
 								// An extension has returned a null value, there is nothing to insert.
 								continue;
@@ -380,7 +380,7 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 
 						$entry->applyFilterActions();
 
-						$entry = Minz_ExtensionManager::callHook('entry_before_insert', $entry);
+						$entry = Base_ExtensionManager::callHook('entry_before_insert', $entry);
 						if ($entry === null) {
 							// An extension has returned a null value, there is nothing to insert.
 							continue;
@@ -389,8 +389,8 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 						if ($pubSubHubbubEnabled && !$simplePiePush) {	//We use push, but have discovered an article by pull!
 							$text = 'An article was discovered by pull although we use PubSubHubbub!: Feed ' . $url .
 								' GUID ' . $entry->guid();
-							Minz_Log::warning($text, PSHB_LOG);
-							Minz_Log::warning($text);
+							Base_Log::warning($text, PSHB_LOG);
+							Base_Log::warning($text);
 							$pubSubHubbubEnabled = false;
 							$feed->pubSubHubbubError(true);
 						}
@@ -428,25 +428,25 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 				if ($feed->selfUrl() !== $url) {	// https://github.com/pubsubhubbub/PubSubHubbub/wiki/Moving-Feeds-or-changing-Hubs
 					$selfUrl = checkUrl($feed->selfUrl());
 					if ($selfUrl) {
-						Minz_Log::debug('WebSub unsubscribe ' . $feed->url(false));
+						Base_Log::debug('WebSub unsubscribe ' . $feed->url(false));
 						if (!$feed->pubSubHubbubSubscribe(false)) {	//Unsubscribe
-							Minz_Log::warning('Error while WebSub unsubscribing from ' . $feed->url(false));
+							Base_Log::warning('Error while WebSub unsubscribing from ' . $feed->url(false));
 						}
 						$feed->_url($selfUrl, false);
-						Minz_Log::notice('Feed ' . $url . ' canonical address moved to ' . $feed->url(false));
+						Base_Log::notice('Feed ' . $url . ' canonical address moved to ' . $feed->url(false));
 						$feedDAO->updateFeed($feed->id(), array('url' => $feed->url()));
 					}
 				}
 			} elseif ($feed->url() !== $url) {	// HTTP 301 Moved Permanently
-				Minz_Log::notice('Feed ' . $url . ' moved permanently to ' . $feed->url(false));
+				Base_Log::notice('Feed ' . $url . ' moved permanently to ' . $feed->url(false));
 				$feedDAO->updateFeed($feed->id(), array('url' => $feed->url()));
 			}
 
 			$feed->faviconPrepare();
 			if ($pubsubhubbubEnabledGeneral && $feed->pubSubHubbubPrepare()) {
-				Minz_Log::notice('WebSub subscribe ' . $feed->url(false));
+				Base_Log::notice('WebSub subscribe ' . $feed->url(false));
 				if (!$feed->pubSubHubbubSubscribe(true)) {	//Subscribe
-					Minz_Log::warning('Error while WebSub subscribing to ' . $feed->url(false));
+					Base_Log::warning('Error while WebSub subscribing to ' . $feed->url(false));
 				}
 			}
 			$feed->unlock();
@@ -488,12 +488,12 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 	 * false, process stops at 10 feeds to avoid time execution problem.
 	 */
 	public function actualizeAction() {
-		Minz_Session::_param('actualize_feeds', false);
-		$id = Minz_Request::param('id');
-		$url = Minz_Request::param('url');
-		$force = Minz_Request::param('force');
-		$maxFeeds = (int)Minz_Request::param('maxFeeds');
-		$noCommit = Minz_Request::fetchPOST('noCommit', 0) == 1;
+		Base_Session::_param('actualize_feeds', false);
+		$id = Base_Request::param('id');
+		$url = Base_Request::param('url');
+		$force = Base_Request::param('force');
+		$maxFeeds = (int)Base_Request::param('maxFeeds');
+		$noCommit = Base_Request::fetchPOST('noCommit', 0) == 1;
 
 		if ($id == -1 && !$noCommit) {	//Special request only to commit & refresh DB cache
 			$updated_feeds = 0;
@@ -510,7 +510,7 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 			list($updated_feeds, $feed, $nb_new_articles) = self::actualizeFeed($id, $url, $force, null, false, $noCommit, $maxFeeds);
 		}
 
-		if (Minz_Request::param('ajax')) {
+		if (Base_Request::param('ajax')) {
 			// Most of the time, ajax request is for only one feed. But since
 			// there are several parallel requests, we should return that there
 			// are several updated feeds.
@@ -518,19 +518,19 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 				'type' => 'good',
 				'content' => _t('feedback.sub.feed.actualizeds')
 			);
-			Minz_Session::_param('notification', $notif);
+			Base_Session::_param('notification', $notif);
 			// No layout in ajax request.
 			$this->view->_layout(false);
 		} else {
 			// Redirect to the main page with correct notification.
 			if ($updated_feeds === 1) {
-				Minz_Request::good(_t('feedback.sub.feed.actualized', $feed->name()), array(
+				Base_Request::good(_t('feedback.sub.feed.actualized', $feed->name()), array(
 					'params' => array('get' => 'f_' . $feed->id())
 				));
 			} elseif ($updated_feeds > 1) {
-				Minz_Request::good(_t('feedback.sub.feed.n_actualized', $updated_feeds), array());
+				Base_Request::good(_t('feedback.sub.feed.n_actualized', $updated_feeds), array());
 			} else {
-				Minz_Request::good(_t('feedback.sub.feed.no_refresh'), array());
+				Base_Request::good(_t('feedback.sub.feed.no_refresh'), array());
 			}
 		}
 		return $updated_feeds;
@@ -581,20 +581,20 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 	 * @todo should handle order of the feed inside the category.
 	 */
 	public function moveAction() {
-		if (!Minz_Request::isPost()) {
-			Minz_Request::forward(array('c' => 'subscription'), true);
+		if (!Base_Request::isPost()) {
+			Base_Request::forward(array('c' => 'subscription'), true);
 		}
 
-		$feed_id = Minz_Request::param('f_id');
-		$cat_id = Minz_Request::param('c_id');
+		$feed_id = Base_Request::param('f_id');
+		$cat_id = Base_Request::param('c_id');
 
 		if (self::moveFeed($feed_id, $cat_id)) {
 			// TODO: return something useful
 			// Log a notice to prevent "Empty IF statement" warning in PHP_CodeSniffer
-			Minz_Log::notice('Moved feed `' . $feed_id . '` in the category `' . $cat_id . '`');
+			Base_Log::notice('Moved feed `' . $feed_id . '` in the category `' . $cat_id . '`');
 		} else {
-			Minz_Log::warning('Cannot move feed `' . $feed_id . '` in the category `' . $cat_id . '`');
-			Minz_Error::error(404);
+			Base_Log::warning('Cannot move feed `' . $feed_id . '` in the category `' . $cat_id . '`');
+			Base_Error::error(404);
 		}
 	}
 
@@ -625,23 +625,23 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 	 *   - r (default: false)
 	 * r permits to redirect to a given page at the end of this action.
 	 *
-	 * @todo handle "r" redirection in Minz_Request::forward()?
+	 * @todo handle "r" redirection in Base_Request::forward()?
 	 */
 	public function deleteAction() {
-		$redirect_url = Minz_Request::param('r', false, true);
+		$redirect_url = Base_Request::param('r', false, true);
 		if (!$redirect_url) {
 			$redirect_url = array('c' => 'subscription', 'a' => 'index');
 		}
-		if (!Minz_Request::isPost()) {
-			Minz_Request::forward($redirect_url, true);
+		if (!Base_Request::isPost()) {
+			Base_Request::forward($redirect_url, true);
 		}
 
-		$id = Minz_Request::param('id');
+		$id = Base_Request::param('id');
 
 		if (self::deleteFeed($id)) {
-			Minz_Request::good(_t('feedback.sub.feed.deleted'), $redirect_url);
+			Base_Request::good(_t('feedback.sub.feed.deleted'), $redirect_url);
 		} else {
-			Minz_Request::bad(_t('feedback.sub.feed.error'), $redirect_url);
+			Base_Request::bad(_t('feedback.sub.feed.error'), $redirect_url);
 		}
 	}
 
@@ -654,19 +654,19 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 	 */
 	public function clearCacheAction() {
 		//Get Feed.
-		$id = Minz_Request::param('id');
+		$id = Base_Request::param('id');
 
 		$feedDAO = RSSServer_Factory::createFeedDao();
 		$feed = $feedDAO->searchById($id);
 
 		if (!$feed) {
-			Minz_Request::bad(_t('feedback.sub.feed.not_found'), array());
+			Base_Request::bad(_t('feedback.sub.feed.not_found'), array());
 			return;
 		}
 
 		$feed->clearCache();
 
-		Minz_Request::good(_t('feedback.sub.feed.cache_cleared', $feed->name()), array(
+		Base_Request::good(_t('feedback.sub.feed.cache_cleared', $feed->name()), array(
 			'params' => array('get' => 'f_' . $feed->id())
 		));
 	}
@@ -682,7 +682,7 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 		@set_time_limit(300);
 
 		//Get Feed ID.
-		$feed_id = Minz_Request::param('id');
+		$feed_id = Base_Request::param('id');
 
 		$feedDAO = RSSServer_Factory::createFeedDao();
 		$entryDAO = RSSServer_Factory::createEntryDao();
@@ -690,7 +690,7 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 		$feed = $feedDAO->searchById($feed_id);
 
 		if (!$feed) {
-			Minz_Request::bad(_t('feedback.sub.feed.not_found'), array());
+			Base_Request::bad(_t('feedback.sub.feed.not_found'), array());
 			return;
 		}
 
@@ -701,7 +701,7 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 		$entries = $entryDAO->listWhere('f', $feed_id, RSSServer_Entry::STATE_ALL, 'DESC', 0);
 
 		//We need another DB connection in parallel
-		Minz_ModelPdo::$usesSharedPdo = false;
+		Base_ModelPdo::$usesSharedPdo = false;
 		$entryDAO2 = RSSServer_Factory::createEntryDao();
 
 		foreach ($entries as $entry) {
@@ -709,10 +709,10 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 			$entryDAO2->updateEntry($entry->toArray());
 		}
 
-		Minz_ModelPdo::$usesSharedPdo = true;
+		Base_ModelPdo::$usesSharedPdo = true;
 
 		//Give feedback to user.
-		Minz_Request::good(_t('feedback.sub.feed.reloaded', $feed->name()), array(
+		Base_Request::good(_t('feedback.sub.feed.reloaded', $feed->name()), array(
 			'params' => array('get' => 'f_' . $feed->id())
 		));
 	}
@@ -742,8 +742,8 @@ class RSSServer_feed_Controller extends Minz_ActionController {
 		]);
 
 		//Get parameters.
-		$feed_id = Minz_Request::param('id');
-		$content_selector = trim(Minz_Request::param('selector'));
+		$feed_id = Base_Request::param('id');
+		$content_selector = trim(Base_Request::param('selector'));
 
 		if (!$content_selector) {
 			$this->view->fatalError = _t('feedback.sub.feed.selector_preview.selector_empty');

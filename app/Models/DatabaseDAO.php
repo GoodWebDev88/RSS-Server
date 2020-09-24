@@ -3,7 +3,7 @@
 /**
  * This class is used to test database is well-constructed.
  */
-class RSSServer_DatabaseDAO extends Minz_ModelPdo {
+class RSSServer_DatabaseDAO extends Base_ModelPdo {
 
 	//MySQL error codes
 	const ER_BAD_FIELD_ERROR = '42S22';
@@ -160,7 +160,7 @@ class RSSServer_DatabaseDAO extends Minz_ModelPdo {
 			if ($stm == false || $stm->fetchAll(PDO::FETCH_ASSOC) === false) {
 				$ok = false;
 				$info = $stm == null ? $this->pdo->errorInfo() : $stm->errorInfo();
-				Minz_Log::warning(__METHOD__ . ' error: ' . $sql . ' : ' . json_encode($info));
+				Base_Log::warning(__METHOD__ . ' error: ' . $sql . ' : ' . json_encode($info));
 			}
 		}
 		return $ok;
@@ -176,7 +176,7 @@ class RSSServer_DatabaseDAO extends Minz_ModelPdo {
 				$ok = $this->pdo->exec($SQL_UPDATE_GUID_LATIN1_BIN) !== false;	//RSSServer 1.12
 			} catch (Exception $e) {
 				$ok = false;
-				Minz_Log::error(__METHOD__ . ' error: ' . $e->getMessage());
+				Base_Log::error(__METHOD__ . ' error: ' . $e->getMessage());
 			}
 		}
 		return $ok;
@@ -193,7 +193,7 @@ class RSSServer_DatabaseDAO extends Minz_ModelPdo {
 		if (defined('STDERR')) {
 			fwrite(STDERR, $error . "\n");
 		}
-		Minz_Log::error($error);
+		Base_Log::error($error);
 		return false;
 	}
 
@@ -243,13 +243,13 @@ class RSSServer_DatabaseDAO extends Minz_ModelPdo {
 		$sqlite = null;
 
 		try {
-			$sqlite = new MinzPDOSQLite('sqlite:' . $filename);
+			$sqlite = new BasePDOSQLite('sqlite:' . $filename);
 		} catch (Exception $e) {
 			$error = 'Error while initialising SQLite copy: ' . $e->getMessage();
 			return self::stdError($error);
 		}
 
-		Minz_ModelPdo::clean();
+		Base_ModelPdo::clean();
 		$userDAOSQLite = new RSSServer_UserDAO('', $sqlite);
 		$categoryDAOSQLite = new RSSServer_CategoryDAOSQLite('', $sqlite);
 		$feedDAOSQLite = new RSSServer_FeedDAOSQLite('', $sqlite);

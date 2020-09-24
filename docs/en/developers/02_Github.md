@@ -8,9 +8,9 @@ If you're convinced that you should be heard, here's how you can go about it.
 
 GitHub is the ideal platform to submit your requests. It allows us to discuss a problem or suggestion with others and it often generates new ideas. Let's not neglect this "social" aspect!
 
- 1. [Go to the bug ticket manager](https://github.com/RSSServer/RSSServer/issues)
+ 1. [Go to the bug ticket manager]
  2. Start by checking if a similar request hasn't already been made. If so, please feel free to add your voice to the request.
- 3. If your request is new, [open a new bug ticket](https://github.com/RSSServer/RSSServer/issues/new)
+ 3. If your request is new, [open a new bug ticket]
  4. Finally, write your request. If you're fluent in English, it's the preferred language because it allows for discussion with the largest number of people.
  5. Please follow the tips below to make it easier to let your ticket be heard.
  

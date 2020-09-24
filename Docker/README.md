@@ -143,7 +143,7 @@ The tags correspond to RSSServer branches and versions:
 
 ### Linux: Ubuntu vs. Alpine
 Our default image is based on [Ubuntu](https://www.ubuntu.com/server). We offer an alternative based on [Alpine](https://alpinelinux.org/) (with the `*-alpine` tag suffix).
-In [our tests](https://github.com/RSSServer/RSSServer/pull/2205), Ubuntu is ~3 times faster,
+In [our tests], Ubuntu is ~3 times faster,
 while Alpine is ~2.5 times [smaller on disk](https://hub.docker.com/r/rssserver/rssserver/tags) (and much faster to build).
 
 

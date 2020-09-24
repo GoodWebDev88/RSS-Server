@@ -35,25 +35,6 @@
   ... //Rest of the script, just as you would do normally.
  ?>
 
- Version 1.8 beta, 2016-08-07, http://alexandre.alapetite.fr/doc-alex/php-http-304/
-
- ------------------------------------------------------------------
- Written by Alexandre Alapetite, http://alexandre.alapetite.fr/cv/
-
- Copyright 2004-2016, Licence: Creative Commons "Attribution-ShareAlike 2.0 France" BY-SA (FR),
- http://creativecommons.org/licenses/by-sa/2.0/fr/
- http://alexandre.alapetite.fr/divers/apropos/#by-sa
- - Attribution. You must give the original author credit
- - Share Alike. If you alter, transform, or build upon this work,
-   you may distribute the resulting work only under a license identical to this one
-   (Can be included in GPL/LGPL projects)
- - The French law is authoritative
- - Any of these conditions can be waived if you get permission from Alexandre Alapetite
- - Please send to Alexandre Alapetite the modifications you make,
-   in order to improve this file for the benefit of everybody
-
- If you want to distribute this code, please do it as a link to:
- http://alexandre.alapetite.fr/doc-alex/php-http-304/
 */
 
 //In RSS/ATOM feedMode, contains the date of the clients last update.
@@ -61,7 +42,7 @@ $clientCacheDate=0;	//Global public variable because PHP4 does not allow conditi
 $_sessionMode=false;	//Global private variable
 
 function httpConditional($UnixTimeStamp,$cacheSeconds=0,$cachePrivacy=0,$feedMode=false,$compression=false,$session=false)
-{//Credits: http://alexandre.alapetite.fr/doc-alex/php-http-304/
+{
 	//RFC2616 HTTP/1.1: http://www.w3.org/Protocols/rfc2616/rfc2616.html
 	//RFC1945 HTTP/1.0: http://www.w3.org/Protocols/rfc1945/rfc1945.txt
 

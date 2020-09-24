@@ -45,7 +45,7 @@ rm RSSServer-backup.tgz
 ## Backing up Feeds
 
 ### Feed list Export
-You can export your feed list in OPML format either from the web interface, or from the [Command-Line Interface](https://github.com/RSSServer/RSSServer/blob/master/cli/README.md).
+You can export your feed list in OPML format either from the web interface, or from the [Command-Line Interface].
 
 ### Saving Articles
 

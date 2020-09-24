@@ -10,11 +10,11 @@ require(__DIR__ . '/../constants.php');
 require(LIB_PATH . '/lib_rss.php');	//Includes class autoloader
 require(LIB_PATH . '/lib_install.php');
 
-Minz_Configuration::register('system',
+Base_Configuration::register('system',
 	DATA_PATH . '/config.php',
 	RSSSERVER_PATH . '/config.default.php');
-RSSServer_Context::$system_conf = Minz_Configuration::get('system');
-Minz_Translate::init('en');
+RSSServer_Context::$system_conf = Base_Configuration::get('system');
+Base_Translate::init('en');
 
 RSSServer_Context::$isCli = true;
 
@@ -37,7 +37,7 @@ function cliInitUser($username) {
 	if (RSSServer_Context::$user_conf == null) {
 		fail('RSSServer error: invalid configuration for user: ' . $username . "\n");
 	}
-	Minz_Session::_param('currentUser', $username);
+	Base_Session::_param('currentUser', $username);
 
 	return $username;
 }

@@ -69,7 +69,7 @@ class RSSServer_DatabaseDAOSQLite extends RSSServer_DatabaseDAO {
 		$ok = $this->pdo->exec('VACUUM') !== false;
 		if (!$ok) {
 			$info = $this->pdo->errorInfo();
-			Minz_Log::warning(__METHOD__ . ' error: ' . $sql . ' : ' . json_encode($info));
+			Base_Log::warning(__METHOD__ . ' error: ' . $sql . ' : ' . json_encode($info));
 		}
 		return $ok;
 	}

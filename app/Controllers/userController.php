@@ -3,7 +3,7 @@
 /**
  * Controller to handle user actions.
  */
-class RSSServer_user_Controller extends Minz_ActionController {
+class RSSServer_user_Controller extends Base_ActionController {
 	/**
 	 * The username is also used as folder name, file name, and part of SQL table name.
 	 * '_' is a reserved internal username.
@@ -50,28 +50,28 @@ class RSSServer_user_Controller extends Minz_ActionController {
 
 	public function updateAction() {
 		if (!RSSServer_Auth::hasAccess('admin')) {
-			Minz_Error::error(403);
+			Base_Error::error(403);
 		}
 
-		if (Minz_Request::isPost()) {
-			$passwordPlain = Minz_Request::param('newPasswordPlain', '', true);
-			Minz_Request::_param('newPasswordPlain');	//Discard plain-text password ASAP
+		if (Base_Request::isPost()) {
+			$passwordPlain = Base_Request::param('newPasswordPlain', '', true);
+			Base_Request::_param('newPasswordPlain');	//Discard plain-text password ASAP
 			$_POST['newPasswordPlain'] = '';
 
-			$username = Minz_Request::param('username');
+			$username = Base_Request::param('username');
 			$ok = self::updateUser($username, null, $passwordPlain, array(
-				'token' => Minz_Request::param('token', null),
+				'token' => Base_Request::param('token', null),
 			));
 
 			if ($ok) {
-				$isSelfUpdate = Minz_Session::param('currentUser', '_') === $username;
+				$isSelfUpdate = Base_Session::param('currentUser', '_') === $username;
 				if ($passwordPlain == '' || !$isSelfUpdate) {
-					Minz_Request::good(_t('feedback.user.updated', $username), array('c' => 'user', 'a' => 'manage'));
+					Base_Request::good(_t('feedback.user.updated', $username), array('c' => 'user', 'a' => 'manage'));
 				} else {
-					Minz_Request::good(_t('feedback.profile.updated'), array('c' => 'index', 'a' => 'index'));
+					Base_Request::good(_t('feedback.profile.updated'), array('c' => 'index', 'a' => 'index'));
 				}
 			} else {
-				Minz_Request::bad(_t('feedback.user.updated.error', $username),
+				Base_Request::bad(_t('feedback.user.updated.error', $username),
 				                  array('c' => 'user', 'a' => 'manage'));
 			}
 		}
@@ -82,7 +82,7 @@ class RSSServer_user_Controller extends Minz_ActionController {
 	 */
 	public function profileAction() {
 		if (!RSSServer_Auth::hasAccess()) {
-			Minz_Error::error(403);
+			Base_Error::error(403);
 		}
 
 		$email_not_verified = RSSServer_Context::$user_conf->email_validation_token != '';
@@ -92,55 +92,55 @@ class RSSServer_user_Controller extends Minz_ActionController {
 			$this->view->disable_aside = true;
 		}
 
-		Minz_View::prependTitle(_t('conf.profile.title') . ' · ');
+		Base_View::prependTitle(_t('conf.profile.title') . ' · ');
 
-		Minz_View::appendScript(Minz_Url::display('/scripts/bcrypt.min.js?' . @filemtime(PUBLIC_PATH . '/scripts/bcrypt.min.js')));
+		Base_View::appendScript(Base_Url::display('/scripts/bcrypt.min.js?' . @filemtime(PUBLIC_PATH . '/scripts/bcrypt.min.js')));
 
-		if (Minz_Request::isPost()) {
+		if (Base_Request::isPost()) {
 			$system_conf = RSSServer_Context::$system_conf;
 			$user_config = RSSServer_Context::$user_conf;
 			$old_email = $user_config->mail_login;
 
-			$email = trim(Minz_Request::param('email', ''));
-			$passwordPlain = Minz_Request::param('newPasswordPlain', '', true);
-			Minz_Request::_param('newPasswordPlain');	//Discard plain-text password ASAP
+			$email = trim(Base_Request::param('email', ''));
+			$passwordPlain = Base_Request::param('newPasswordPlain', '', true);
+			Base_Request::_param('newPasswordPlain');	//Discard plain-text password ASAP
 			$_POST['newPasswordPlain'] = '';
 
 			if ($system_conf->force_email_validation && empty($email)) {
-				Minz_Request::bad(
+				Base_Request::bad(
 					_t('user.email.feedback.required'),
 					array('c' => 'user', 'a' => 'profile')
 				);
 			}
 
 			if (!empty($email) && !validateEmailAddress($email)) {
-				Minz_Request::bad(
+				Base_Request::bad(
 					_t('user.email.feedback.invalid'),
 					array('c' => 'user', 'a' => 'profile')
 				);
 			}
 
 			$ok = self::updateUser(
-				Minz_Session::param('currentUser'),
+				Base_Session::param('currentUser'),
 				$email,
 				$passwordPlain,
 				array(
-					'token' => Minz_Request::param('token', null),
+					'token' => Base_Request::param('token', null),
 				)
 			);
 
-			Minz_Session::_param('passwordHash', RSSServer_Context::$user_conf->passwordHash);
+			Base_Session::_param('passwordHash', RSSServer_Context::$user_conf->passwordHash);
 
 			if ($ok) {
 				if ($system_conf->force_email_validation && $email !== $old_email) {
-					Minz_Request::good(_t('feedback.profile.updated'), array('c' => 'user', 'a' => 'validateEmail'));
+					Base_Request::good(_t('feedback.profile.updated'), array('c' => 'user', 'a' => 'validateEmail'));
 				} elseif ($passwordPlain == '') {
-					Minz_Request::good(_t('feedback.profile.updated'), array('c' => 'user', 'a' => 'profile'));
+					Base_Request::good(_t('feedback.profile.updated'), array('c' => 'user', 'a' => 'profile'));
 				} else {
-					Minz_Request::good(_t('feedback.profile.updated'), array('c' => 'index', 'a' => 'index'));
+					Base_Request::good(_t('feedback.profile.updated'), array('c' => 'index', 'a' => 'index'));
 				}
 			} else {
-				Minz_Request::bad(_t('feedback.profile.error'),
+				Base_Request::bad(_t('feedback.profile.error'),
 				                  array('c' => 'user', 'a' => 'profile'));
 			}
 		}
@@ -148,14 +148,14 @@ class RSSServer_user_Controller extends Minz_ActionController {
 
 	public function purgeAction() {
 		if (!RSSServer_Auth::hasAccess('admin')) {
-			Minz_Error::error(403);
+			Base_Error::error(403);
 		}
 
-		if (Minz_Request::isPost()) {
-			$username = Minz_Request::param('username');
+		if (Base_Request::isPost()) {
+			$username = Base_Request::param('username');
 
 			if (!RSSServer_UserDAO::exists($username)) {
-				Minz_Error::error(404);
+				Base_Error::error(404);
 			}
 
 			$feedDAO = RSSServer_Factory::createFeedDao($username);
@@ -168,13 +168,13 @@ class RSSServer_user_Controller extends Minz_ActionController {
 	 */
 	public function manageAction() {
 		if (!RSSServer_Auth::hasAccess('admin')) {
-			Minz_Error::error(403);
+			Base_Error::error(403);
 		}
 
-		Minz_View::prependTitle(_t('admin.user.title') . ' · ');
+		Base_View::prependTitle(_t('admin.user.title') . ' · ');
 
-		if (Minz_Request::isPost()) {
-			$action = Minz_Request::param('action');
+		if (Base_Request::isPost()) {
+			$action = Base_Request::param('action');
 			switch ($action) {
 				case 'delete':
 					$this->deleteAction();
@@ -195,7 +195,7 @@ class RSSServer_user_Controller extends Minz_ActionController {
 		}
 
 		$this->view->show_email_field = RSSServer_Context::$system_conf->force_email_validation;
-		$this->view->current_user = Minz_Request::param('u');
+		$this->view->current_user = Base_Request::param('u');
 
 		foreach (listUsers() as $user) {
 			$this->view->users[$user] = $this->retrieveUserDetails($user);
@@ -221,7 +221,7 @@ class RSSServer_user_Controller extends Minz_ActionController {
 		$homeDir = join_path(DATA_PATH, 'users', $new_user_name);
 
 		if ($ok) {
-			$languages = Minz_Translate::availableLanguages();
+			$languages = Base_Translate::availableLanguages();
 			if (empty($userConfig['language']) || !in_array($userConfig['language'], $languages)) {
 				$userConfig['language'] = 'en';
 			}
@@ -250,7 +250,7 @@ class RSSServer_user_Controller extends Minz_ActionController {
 				try {
 					$importController->importFile($opmlPath, $opmlPath, $new_user_name);
 				} catch (Exception $e) {
-					Minz_Log::error('Error while importing default OPML for user ' . $new_user_name . ': ' . $e->getMessage());
+					Base_Log::error('Error while importing default OPML for user ' . $new_user_name . ': ' . $e->getMessage());
 				}
 			}
 
@@ -270,70 +270,70 @@ class RSSServer_user_Controller extends Minz_ActionController {
 	 *   - r (i.e. a redirection url, optional)
 	 *
 	 * @todo clean up this method. Idea: write a method to init a user with basic information.
-	 * @todo handle r redirection in Minz_Request::forward directly?
+	 * @todo handle r redirection in Base_Request::forward directly?
 	 */
 	public function createAction() {
 		if (!RSSServer_Auth::hasAccess('admin') && max_registrations_reached()) {
-			Minz_Error::error(403);
+			Base_Error::error(403);
 		}
 
-		if (Minz_Request::isPost()) {
+		if (Base_Request::isPost()) {
 			$system_conf = RSSServer_Context::$system_conf;
 
-			$new_user_name = Minz_Request::param('new_user_name');
-			$email = Minz_Request::param('new_user_email', '');
-			$passwordPlain = Minz_Request::param('new_user_passwordPlain', '', true);
+			$new_user_name = Base_Request::param('new_user_name');
+			$email = Base_Request::param('new_user_email', '');
+			$passwordPlain = Base_Request::param('new_user_passwordPlain', '', true);
 
 			if (!self::checkUsername($new_user_name)) {
-				Minz_Request::bad(
+				Base_Request::bad(
 					_t('user.username.invalid'),
 					array('c' => 'auth', 'a' => 'register')
 				);
 			}
 
 			if (RSSServer_UserDAO::exists($new_user_name)) {
-				Minz_Request::bad(
+				Base_Request::bad(
 					_t('user.username.taken', $new_user_name),
 					array('c' => 'auth', 'a' => 'register')
 				);
 			}
 
 			if (!RSSServer_password_Util::check($passwordPlain)) {
-				Minz_Request::bad(
+				Base_Request::bad(
 					_t('user.password.invalid'),
 					array('c' => 'auth', 'a' => 'register')
 				);
 			}
 
 			$tos_enabled = file_exists(join_path(DATA_PATH, 'tos.html'));
-			$accept_tos = Minz_Request::param('accept_tos', false);
+			$accept_tos = Base_Request::param('accept_tos', false);
 
 			if ($system_conf->force_email_validation && empty($email)) {
-				Minz_Request::bad(
+				Base_Request::bad(
 					_t('user.email.feedback.required'),
 					array('c' => 'auth', 'a' => 'register')
 				);
 			}
 
 			if (!empty($email) && !validateEmailAddress($email)) {
-				Minz_Request::bad(
+				Base_Request::bad(
 					_t('user.email.feedback.invalid'),
 					array('c' => 'auth', 'a' => 'register')
 				);
 			}
 
 			if ($tos_enabled && !$accept_tos) {
-				Minz_Request::bad(
+				Base_Request::bad(
 					_t('user.tos.feedback.invalid'),
 					array('c' => 'auth', 'a' => 'register')
 				);
 			}
 
 			$ok = self::createUser($new_user_name, $email, $passwordPlain, array(
-				'language' => Minz_Request::param('new_user_language', RSSServer_Context::$user_conf->language),
-				'is_admin' => Minz_Request::paramBoolean('new_user_is_admin'),
+				'language' => Base_Request::param('new_user_language', RSSServer_Context::$user_conf->language),
+				'is_admin' => Base_Request::paramBoolean('new_user_is_admin'),
 			));
-			Minz_Request::_param('new_user_passwordPlain');	//Discard plain-text password ASAP
+			Base_Request::_param('new_user_passwordPlain');	//Discard plain-text password ASAP
 			$_POST['new_user_passwordPlain'] = '';
 			invalidateHttpCache();
 
@@ -343,9 +343,9 @@ class RSSServer_user_Controller extends Minz_ActionController {
 			// get started immediately.
 			if ($ok && !RSSServer_Auth::hasAccess('admin')) {
 				$user_conf = get_user_configuration($new_user_name);
-				Minz_Session::_param('currentUser', $new_user_name);
-				Minz_Session::_param('passwordHash', $user_conf->passwordHash);
-				Minz_Session::_param('csrf');
+				Base_Session::_param('currentUser', $new_user_name);
+				Base_Session::_param('passwordHash', $user_conf->passwordHash);
+				Base_Session::_param('csrf');
 				RSSServer_Auth::giveAccess();
 			}
 
@@ -353,14 +353,14 @@ class RSSServer_user_Controller extends Minz_ActionController {
 				'type' => $ok ? 'good' : 'bad',
 				'content' => _t('feedback.user.created' . (!$ok ? '.error' : ''), $new_user_name)
 			);
-			Minz_Session::_param('notification', $notif);
+			Base_Session::_param('notification', $notif);
 		}
 
-		$redirect_url = urldecode(Minz_Request::param('r', false, true));
+		$redirect_url = urldecode(Base_Request::param('r', false, true));
 		if (!$redirect_url) {
 			$redirect_url = array('c' => 'user', 'a' => 'manage');
 		}
-		Minz_Request::forward($redirect_url, true);
+		Base_Request::forward($redirect_url, true);
 	}
 
 	public static function deleteUser($username) {
@@ -400,29 +400,29 @@ class RSSServer_user_Controller extends Minz_ActionController {
 	 */
 	public function validateEmailAction() {
 		if (!RSSServer_Context::$system_conf->force_email_validation) {
-			Minz_Error::error(404);
+			Base_Error::error(404);
 		}
 
-		Minz_View::prependTitle(_t('user.email.validation.title') . ' · ');
+		Base_View::prependTitle(_t('user.email.validation.title') . ' · ');
 		$this->view->_layout('simple');
 
-		$username = Minz_Request::param('username');
-		$token = Minz_Request::param('token');
+		$username = Base_Request::param('username');
+		$token = Base_Request::param('token');
 
 		if ($username) {
 			$user_config = get_user_configuration($username);
 		} elseif (RSSServer_Auth::hasAccess()) {
 			$user_config = RSSServer_Context::$user_conf;
 		} else {
-			Minz_Error::error(403);
+			Base_Error::error(403);
 		}
 
 		if (!RSSServer_UserDAO::exists($username) || $user_config === null) {
-			Minz_Error::error(404);
+			Base_Error::error(404);
 		}
 
 		if ($user_config->email_validation_token === '') {
-			Minz_Request::good(
+			Base_Request::good(
 				_t('user.email.validation.feedback.unnecessary'),
 				array('c' => 'index', 'a' => 'index')
 			);
@@ -430,7 +430,7 @@ class RSSServer_user_Controller extends Minz_ActionController {
 
 		if ($token) {
 			if ($user_config->email_validation_token !== $token) {
-				Minz_Request::bad(
+				Base_Request::bad(
 					_t('user.email.validation.feedback.wrong_token'),
 					array('c' => 'user', 'a' => 'validateEmail')
 				);
@@ -438,12 +438,12 @@ class RSSServer_user_Controller extends Minz_ActionController {
 
 			$user_config->email_validation_token = '';
 			if ($user_config->save()) {
-				Minz_Request::good(
+				Base_Request::good(
 					_t('user.email.validation.feedback.ok'),
 					array('c' => 'index', 'a' => 'index')
 				);
 			} else {
-				Minz_Request::bad(
+				Base_Request::bad(
 					_t('user.email.validation.feedback.error'),
 					array('c' => 'user', 'a' => 'validateEmail')
 				);
@@ -463,18 +463,18 @@ class RSSServer_user_Controller extends Minz_ActionController {
 	 */
 	public function sendValidationEmailAction() {
 		if (!RSSServer_Auth::hasAccess()) {
-			Minz_Error::error(403);
+			Base_Error::error(403);
 		}
 
-		if (!Minz_Request::isPost()) {
-			Minz_Error::error(404);
+		if (!Base_Request::isPost()) {
+			Base_Error::error(404);
 		}
 
-		$username = Minz_Session::param('currentUser', '_');
+		$username = Base_Session::param('currentUser', '_');
 		$user_config = RSSServer_Context::$user_conf;
 
 		if ($user_config->email_validation_token === '') {
-			Minz_Request::forward(array(
+			Base_Request::forward(array(
 				'c' => 'index',
 				'a' => 'index',
 			), true);
@@ -485,12 +485,12 @@ class RSSServer_user_Controller extends Minz_ActionController {
 
 		$redirect_url = array('c' => 'user', 'a' => 'validateEmail');
 		if ($ok) {
-			Minz_Request::good(
+			Base_Request::good(
 				_t('user.email.validation.feedback.email_sent'),
 				$redirect_url
 			);
 		} else {
-			Minz_Request::bad(
+			Base_Request::bad(
 				_t('user.email.validation.feedback.email_failed'),
 				$redirect_url
 			);
@@ -506,24 +506,24 @@ class RSSServer_user_Controller extends Minz_ActionController {
 	 * @todo clean up this method. Idea: create a User->clean() method.
 	 */
 	public function deleteAction() {
-		$username = Minz_Request::param('username');
-		$self_deletion = Minz_Session::param('currentUser', '_') === $username;
+		$username = Base_Request::param('username');
+		$self_deletion = Base_Session::param('currentUser', '_') === $username;
 
 		if (!RSSServer_Auth::hasAccess('admin') && !$self_deletion) {
-			Minz_Error::error(403);
+			Base_Error::error(403);
 		}
 
-		$redirect_url = urldecode(Minz_Request::param('r', false, true));
+		$redirect_url = urldecode(Base_Request::param('r', false, true));
 		if (!$redirect_url) {
 			$redirect_url = array('c' => 'user', 'a' => 'manage');
 		}
 
-		if (Minz_Request::isPost()) {
+		if (Base_Request::isPost()) {
 			$ok = true;
 			if ($ok && $self_deletion) {
 				// We check the password if it's a self-destruction
-				$nonce = Minz_Session::param('nonce');
-				$challenge = Minz_Request::param('challenge', '');
+				$nonce = Base_Session::param('nonce');
+				$challenge = Base_Request::param('challenge', '');
 
 				$ok &= RSSServer_FormAuth::checkCredentials(
 					$username, RSSServer_Context::$user_conf->passwordHash,
@@ -543,10 +543,10 @@ class RSSServer_user_Controller extends Minz_ActionController {
 				'type' => $ok ? 'good' : 'bad',
 				'content' => _t('feedback.user.deleted' . (!$ok ? '.error' : ''), $username)
 			);
-			Minz_Session::_param('notification', $notif);
+			Base_Session::_param('notification', $notif);
 		}
 
-		Minz_Request::forward($redirect_url, true);
+		Base_Request::forward($redirect_url, true);
 	}
 
 	public function promoteAction() {
@@ -559,20 +559,20 @@ class RSSServer_user_Controller extends Minz_ActionController {
 
 	private function switchAdminAction($isAdmin) {
 		if (!RSSServer_Auth::hasAccess('admin')) {
-			Minz_Error::error(403);
+			Base_Error::error(403);
 		}
 
-		if (!Minz_Request::isPost()) {
-			Minz_Error::error(403);
+		if (!Base_Request::isPost()) {
+			Base_Error::error(403);
 		}
 
-		$username = Minz_Request::param('username');
+		$username = Base_Request::param('username');
 		if (!RSSServer_UserDAO::exists($username)) {
-			Minz_Error::error(404);
+			Base_Error::error(404);
 		}
 
 		if (null === $userConfig = get_user_configuration($username)) {
-			Minz_Error::error(500);
+			Base_Error::error(500);
 		}
 
 		$userConfig->_param('is_admin', $isAdmin);
@@ -580,21 +580,21 @@ class RSSServer_user_Controller extends Minz_ActionController {
 		$ok = $userConfig->save();
 
 		if ($ok) {
-			Minz_Request::good(_t('feedback.user.updated', $username), array('c' => 'user', 'a' => 'manage'));
+			Base_Request::good(_t('feedback.user.updated', $username), array('c' => 'user', 'a' => 'manage'));
 		} else {
-			Minz_Request::bad(_t('feedback.user.updated.error', $username),
+			Base_Request::bad(_t('feedback.user.updated.error', $username),
 							  array('c' => 'user', 'a' => 'manage'));
 		}
 	}
 
 	public function detailsAction() {
 		if (!RSSServer_Auth::hasAccess('admin')) {
-			Minz_Error::error(403);
+			Base_Error::error(403);
 		}
 
-		$username = Minz_Request::param('username');
+		$username = Base_Request::param('username');
 		if (!RSSServer_UserDAO::exists($username)) {
-			Minz_Error::error(404);
+			Base_Error::error(404);
 		}
 
 		$this->view->isDefaultUser = $username === RSSServer_Context::$system_conf->default_user;

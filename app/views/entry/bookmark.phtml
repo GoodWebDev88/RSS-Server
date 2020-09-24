@@ -2,15 +2,15 @@
 header('Content-Type: application/json; charset=UTF-8');
 
 $url = array(
-	'c' => Minz_Request::controllerName(),
-	'a' => Minz_Request::actionName(),
-	'params' => Minz_Request::fetchGET(),
+	'c' => Base_Request::controllerName(),
+	'a' => Base_Request::actionName(),
+	'params' => Base_Request::fetchGET(),
 );
 
-$url['params']['is_favorite'] = Minz_Request::param('is_favorite', true) ? '0' : '1';
+$url['params']['is_favorite'] = Base_Request::param('is_favorite', true) ? '0' : '1';
 
 RSSServer::loadStylesAndScripts();
 echo json_encode(array(
-		'url' => str_ireplace('&amp;', '&', Minz_Url::display($url)),
+		'url' => str_ireplace('&amp;', '&', Base_Url::display($url)),
 		'icon' => _i($url['params']['is_favorite'] === '1' ? 'non-starred' : 'starred')
 	));

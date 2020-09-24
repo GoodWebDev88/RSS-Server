@@ -8,5 +8,3 @@ A base theme for [RSSServer](https://rssserver.org)
 3. Choose your new theme in RSSServer configuration
 4. Enjoy your wonderful theme!
 
-Don't hesitate to share your theme with us [on Github](https://github.com/RSSServer/RSSServer/issues) :)
-

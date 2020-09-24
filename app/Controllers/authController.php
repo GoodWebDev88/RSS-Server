@@ -3,7 +3,7 @@
 /**
  * This controller handles action about authentication.
  */
-class RSSServer_auth_Controller extends Minz_ActionController {
+class RSSServer_auth_Controller extends Base_ActionController {
 	/**
 	 * This action handles authentication management page.
 	 *
@@ -19,21 +19,21 @@ class RSSServer_auth_Controller extends Minz_ActionController {
 	 */
 	public function indexAction() {
 		if (!RSSServer_Auth::hasAccess('admin')) {
-			Minz_Error::error(403);
+			Base_Error::error(403);
 		}
 
-		Minz_View::prependTitle(_t('admin.auth.title') . ' · ');
+		Base_View::prependTitle(_t('admin.auth.title') . ' · ');
 
-		if (Minz_Request::isPost()) {
+		if (Base_Request::isPost()) {
 			$ok = true;
 
-			$anon = Minz_Request::param('anon_access', false);
+			$anon = Base_Request::param('anon_access', false);
 			$anon = ((bool)$anon) && ($anon !== 'no');
-			$anon_refresh = Minz_Request::param('anon_refresh', false);
+			$anon_refresh = Base_Request::param('anon_refresh', false);
 			$anon_refresh = ((bool)$anon_refresh) && ($anon_refresh !== 'no');
-			$auth_type = Minz_Request::param('auth_type', 'none');
-			$unsafe_autologin = Minz_Request::param('unsafe_autologin', false);
-			$api_enabled = Minz_Request::param('api_enabled', false);
+			$auth_type = Base_Request::param('auth_type', 'none');
+			$unsafe_autologin = Base_Request::param('unsafe_autologin', false);
+			$api_enabled = Base_Request::param('api_enabled', false);
 			if ($anon != RSSServer_Context::$system_conf->allow_anonymous ||
 				$auth_type != RSSServer_Context::$system_conf->auth_type ||
 				$anon_refresh != RSSServer_Context::$system_conf->allow_anonymous_refresh ||
@@ -53,10 +53,10 @@ class RSSServer_auth_Controller extends Minz_ActionController {
 			invalidateHttpCache();
 
 			if ($ok) {
-				Minz_Request::good(_t('feedback.conf.updated'),
+				Base_Request::good(_t('feedback.conf.updated'),
 				                   array('c' => 'auth', 'a' => 'index'));
 			} else {
-				Minz_Request::bad(_t('feedback.conf.error'),
+				Base_Request::bad(_t('feedback.conf.error'),
 				                  array('c' => 'auth', 'a' => 'index'));
 			}
 		}
@@ -69,26 +69,26 @@ class RSSServer_auth_Controller extends Minz_ActionController {
 	 * the user is already connected.
 	 */
 	public function loginAction() {
-		if (RSSServer_Auth::hasAccess() && Minz_Request::param('u', '') == '') {
-			Minz_Request::forward(array('c' => 'index', 'a' => 'index'), true);
+		if (RSSServer_Auth::hasAccess() && Base_Request::param('u', '') == '') {
+			Base_Request::forward(array('c' => 'index', 'a' => 'index'), true);
 		}
 
 		$auth_type = RSSServer_Context::$system_conf->auth_type;
 		switch ($auth_type) {
 		case 'form':
-			Minz_Request::forward(array('c' => 'auth', 'a' => 'formLogin'));
+			Base_Request::forward(array('c' => 'auth', 'a' => 'formLogin'));
 			break;
 		case 'http_auth':
-			Minz_Error::error(403, array('error' => array(_t('feedback.access.denied'),
+			Base_Error::error(403, array('error' => array(_t('feedback.access.denied'),
 					' [HTTP Remote-User=' . htmlspecialchars(httpAuthUser(), ENT_NOQUOTES, 'UTF-8') . ']'
 				)), false);
 			break;
 		case 'none':
 			// It should not happen!
-			Minz_Error::error(404);
+			Base_Error::error(404);
 		default:
 			// TODO load plugin instead
-			Minz_Error::error(404);
+			Base_Error::error(404);
 		}
 	}
 
@@ -109,25 +109,25 @@ class RSSServer_auth_Controller extends Minz_ActionController {
 	public function formLoginAction() {
 		invalidateHttpCache();
 
-		Minz_View::prependTitle(_t('gen.auth.login') . ' · ');
-		Minz_View::appendScript(Minz_Url::display('/scripts/bcrypt.min.js?' . @filemtime(PUBLIC_PATH . '/scripts/bcrypt.min.js')));
+		Base_View::prependTitle(_t('gen.auth.login') . ' · ');
+		Base_View::appendScript(Base_Url::display('/scripts/bcrypt.min.js?' . @filemtime(PUBLIC_PATH . '/scripts/bcrypt.min.js')));
 
-		$conf = Minz_Configuration::get('system');
+		$conf = Base_Configuration::get('system');
 		$limits = $conf->limits;
 		$this->view->cookie_days = round($limits['cookie_duration'] / 86400, 1);
 
-		$isPOST = Minz_Request::isPost() && !Minz_Session::param('POST_to_GET');
-		Minz_Session::_param('POST_to_GET');
+		$isPOST = Base_Request::isPost() && !Base_Session::param('POST_to_GET');
+		Base_Session::_param('POST_to_GET');
 
 		if ($isPOST) {
-			$nonce = Minz_Session::param('nonce');
-			$username = Minz_Request::param('username', '');
-			$challenge = Minz_Request::param('challenge', '');
+			$nonce = Base_Session::param('nonce');
+			$username = Base_Request::param('username', '');
+			$challenge = Base_Request::param('challenge', '');
 
 			$conf = get_user_configuration($username);
 			if ($conf == null) {
 				//We do not test here whether the user exists, so most likely an internal error.
-				Minz_Error::error(403, array(_t('feedback.auth.login.invalid')), false);
+				Base_Error::error(403, array(_t('feedback.auth.login.invalid')), false);
 				return;
 			}
 
@@ -136,40 +136,40 @@ class RSSServer_auth_Controller extends Minz_ActionController {
 			);
 			if ($ok) {
 				// Set session parameter to give access to the user.
-				Minz_Session::_param('currentUser', $username);
-				Minz_Session::_param('passwordHash', $conf->passwordHash);
-				Minz_Session::_param('csrf');
+				Base_Session::_param('currentUser', $username);
+				Base_Session::_param('passwordHash', $conf->passwordHash);
+				Base_Session::_param('csrf');
 				RSSServer_Auth::giveAccess();
 
 				// Set cookie parameter if nedded.
-				if (Minz_Request::param('keep_logged_in')) {
+				if (Base_Request::param('keep_logged_in')) {
 					RSSServer_FormAuth::makeCookie($username, $conf->passwordHash);
 				} else {
 					RSSServer_FormAuth::deleteCookie();
 				}
 
 				// All is good, go back to the index.
-				Minz_Request::good(_t('feedback.auth.login.success'),
+				Base_Request::good(_t('feedback.auth.login.success'),
 				                   array('c' => 'index', 'a' => 'index'));
 			} else {
-				Minz_Log::warning('Password mismatch for' .
+				Base_Log::warning('Password mismatch for' .
 				                  ' user=' . $username .
 				                  ', nonce=' . $nonce .
 				                  ', c=' . $challenge);
 
 				header('HTTP/1.1 403 Forbidden');
-				Minz_Session::_param('POST_to_GET', true);	//Prevent infinite internal redirect
-				Minz_View::_param('notification', [
+				Base_Session::_param('POST_to_GET', true);	//Prevent infinite internal redirect
+				Base_View::_param('notification', [
 					'type' => 'bad',
 					'content' => _t('feedback.auth.login.invalid'),
 				]);
-				Minz_Request::forward(['c' => 'auth', 'a' => 'login'], false);
+				Base_Request::forward(['c' => 'auth', 'a' => 'login'], false);
 				return;
 			}
 		} elseif (RSSServer_Context::$system_conf->unsafe_autologin_enabled) {
-			$username = Minz_Request::param('u', '');
-			$password = Minz_Request::param('p', '');
-			Minz_Request::_param('p');
+			$username = Base_Request::param('u', '');
+			$password = Base_Request::param('p', '');
+			Base_Request::_param('p');
 
 			if (!$username) {
 				return;
@@ -186,16 +186,16 @@ class RSSServer_auth_Controller extends Minz_ActionController {
 			$ok = password_verify($password, $s);
 			unset($password);
 			if ($ok) {
-				Minz_Session::_param('currentUser', $username);
-				Minz_Session::_param('passwordHash', $s);
-				Minz_Session::_param('csrf');
+				Base_Session::_param('currentUser', $username);
+				Base_Session::_param('passwordHash', $s);
+				Base_Session::_param('csrf');
 				RSSServer_Auth::giveAccess();
 
-				Minz_Request::good(_t('feedback.auth.login.success'),
+				Base_Request::good(_t('feedback.auth.login.success'),
 				                   array('c' => 'index', 'a' => 'index'));
 			} else {
-				Minz_Log::warning('Unsafe password mismatch for user ' . $username);
-				Minz_Request::bad(
+				Base_Log::warning('Unsafe password mismatch for user ' . $username);
+				Base_Request::bad(
 					_t('feedback.auth.login.invalid'),
 					array('c' => 'auth', 'a' => 'login')
 				);
@@ -209,7 +209,7 @@ class RSSServer_auth_Controller extends Minz_ActionController {
 	public function logoutAction() {
 		invalidateHttpCache();
 		RSSServer_Auth::removeAccess();
-		Minz_Request::good(_t('feedback.auth.logout.success'),
+		Base_Request::good(_t('feedback.auth.logout.success'),
 		                   array('c' => 'index', 'a' => 'index'));
 	}
 
@@ -222,15 +222,15 @@ class RSSServer_auth_Controller extends Minz_ActionController {
 	 */
 	public function registerAction() {
 		if (RSSServer_Auth::hasAccess()) {
-			Minz_Request::forward(array('c' => 'index', 'a' => 'index'), true);
+			Base_Request::forward(array('c' => 'index', 'a' => 'index'), true);
 		}
 
 		if (max_registrations_reached()) {
-			Minz_Error::error(403);
+			Base_Error::error(403);
 		}
 
 		$this->view->show_tos_checkbox = file_exists(join_path(DATA_PATH, 'tos.html'));
 		$this->view->show_email_field = RSSServer_Context::$system_conf->force_email_validation;
-		Minz_View::prependTitle(_t('gen.auth.registration.title') . ' · ');
+		Base_View::prependTitle(_t('gen.auth.registration.title') . ' · ');
 	}
 }

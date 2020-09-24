@@ -1,6 +1,6 @@
 <?php
 
-class RSSServer_Tag extends Minz_Model {
+class RSSServer_Tag extends Base_Model {
 	private $id = 0;
 	private $name;
 	private $attributes = [];

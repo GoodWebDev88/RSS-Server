@@ -1,6 +1,6 @@
 <?php
 
-class RSSServer_Category extends Minz_Model {
+class RSSServer_Category extends Base_Model {
 	private $id = 0;
 	private $name;
 	private $nbFeed = -1;

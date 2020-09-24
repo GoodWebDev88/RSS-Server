@@ -1,6 +1,6 @@
 <?php
 
-class RSSServer_TagDAO extends Minz_ModelPdo implements RSSServer_Searchable {
+class RSSServer_TagDAO extends Base_ModelPdo implements RSSServer_Searchable {
 
 	public function sqlIgnore() {
 		return 'IGNORE';
@@ -15,14 +15,14 @@ class RSSServer_TagDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 		try {
 			require(APP_PATH . '/SQL/install.sql.' . $this->pdo->dbType() . '.php');
 
-			Minz_Log::warning('SQL ALTER GUID case sensitivity...');
+			Base_Log::warning('SQL ALTER GUID case sensitivity...');
 			$databaseDAO = RSSServer_Factory::createDatabaseDAO();
 			$databaseDAO->ensureCaseInsensitiveGuids();
 
-			Minz_Log::warning('SQL CREATE TABLE tag...');
+			Base_Log::warning('SQL CREATE TABLE tag...');
 			$ok = $this->pdo->exec($SQL_CREATE_TABLE_TAGS) !== false;
 		} catch (Exception $e) {
-			Minz_Log::error('RSSServer_EntryDAO::createTagTable error: ' . $e->getMessage());
+			Base_Log::error('RSSServer_EntryDAO::createTagTable error: ' . $e->getMessage());
 		}
 		if ($hadTransaction) {
 			$this->pdo->beginTransaction();
@@ -61,7 +61,7 @@ class RSSServer_TagDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 			return $this->pdo->lastInsertId('`_tag_id_seq`');
 		} else {
 			$info = $stm == null ? $this->pdo->errorInfo() : $stm->errorInfo();
-			Minz_Log::error('SQL error addTag: ' . $info[2]);
+			Base_Log::error('SQL error addTag: ' . $info[2]);
 			return false;
 		}
 	}
@@ -98,7 +98,7 @@ class RSSServer_TagDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 			return $stm->rowCount();
 		} else {
 			$info = $stm == null ? $this->pdo->errorInfo() : $stm->errorInfo();
-			Minz_Log::error('SQL error updateTag: ' . $info[2]);
+			Base_Log::error('SQL error updateTag: ' . $info[2]);
 			return false;
 		}
 	}
@@ -127,7 +127,7 @@ class RSSServer_TagDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 			return $stm->rowCount();
 		} else {
 			$info = $stm == null ? $this->pdo->errorInfo() : $stm->errorInfo();
-			Minz_Log::error('SQL error deleteTag: ' . $info[2]);
+			Base_Log::error('SQL error deleteTag: ' . $info[2]);
 			return false;
 		}
 	}
@@ -188,7 +188,7 @@ class RSSServer_TagDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 			if ($this->autoUpdateDb($info)) {
 				return $this->listTags($precounts);
 			}
-			Minz_Log::error('SQL error listTags: ' . $info[2]);
+			Base_Log::error('SQL error listTags: ' . $info[2]);
 			return false;
 		}
 	}
@@ -223,7 +223,7 @@ class RSSServer_TagDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 			if ($this->autoUpdateDb($info)) {
 				return $this->count();
 			}
-			Minz_Log::error('SQL error TagDAO::count: ' . $info[2]);
+			Base_Log::error('SQL error TagDAO::count: ' . $info[2]);
 			return false;
 		}
 	}
@@ -261,7 +261,7 @@ class RSSServer_TagDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 			return true;
 		} else {
 			$info = $stm == null ? $this->pdo->errorInfo() : $stm->errorInfo();
-			Minz_Log::error('SQL error tagEntry: ' . $info[2]);
+			Base_Log::error('SQL error tagEntry: ' . $info[2]);
 			return false;
 		}
 	}
@@ -287,7 +287,7 @@ class RSSServer_TagDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 			if ($this->autoUpdateDb($info)) {
 				return $this->getTagsForEntry($id_entry);
 			}
-			Minz_Log::error('SQL error getTagsForEntry: ' . $info[2]);
+			Base_Log::error('SQL error getTagsForEntry: ' . $info[2]);
 			return false;
 		}
 	}
@@ -323,7 +323,7 @@ class RSSServer_TagDAO extends Minz_ModelPdo implements RSSServer_Searchable {
 			if ($this->autoUpdateDb($info)) {
 				return $this->getTagsForEntries($entries);
 			}
-			Minz_Log::error('SQL error getTagsForEntries: ' . $info[2]);
+			Base_Log::error('SQL error getTagsForEntries: ' . $info[2]);
 			return false;
 		}
 	}

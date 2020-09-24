@@ -113,4 +113,4 @@ A brief explanation of the previous command block:
 ## Part 4: Finishing the Installation
 
 You can now finish the installation from a web browser by navigating to to `http://<your_server>/p` and following the graphical prompts.
-Alternatively, you can finish the installation using [the cli](https://github.com/RSSServer/RSSServer/tree/master/cli)
+Alternatively, you can finish the installation using [the cli]

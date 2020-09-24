@@ -6,7 +6,7 @@ Thanks to our contributors, RSSServer is translated into more than 15 languages.
 
 It is common (and that's an understatement) to want to show some text to the user. The problem is that RSSServer has users of different nationalities. It is therefore necessary to be able to manage different languages in order not to remain confined to English or French.
 
-The solution is to use the `Minz_Translate` module, which allows dynamic translation of RSSServer. Before using this module, it is necessary to know where to find the strings to be translated. Each language has its own subdirectory in a parent directory named `app/i18n/`. For example, English language files are located in [`app/i18n/en/`](/app/i18n/en/). There are seven different files:
+The solution is to use the `Base_Translate` module, which allows dynamic translation of RSSServer. Before using this module, it is necessary to know where to find the strings to be translated. Each language has its own subdirectory in a parent directory named `app/i18n/`. For example, English language files are located in [`app/i18n/en/`](/app/i18n/en/). There are seven different files:
 
 * `admin.php` for anything related to RSSServer administration
 * `conf.php` for configuration
@@ -110,7 +110,7 @@ The key will simply be removed and added back with the new value.
 
 ## How to access a translation programmatically
 
-To access these translations, you must use the `_t()` function (which is a shortcut for `Minz_Translate::t()`). Code example:
+To access these translations, you must use the `_t()` function (which is a shortcut for `Base_Translate::t()`). Code example:
 
 ```html
 <p>

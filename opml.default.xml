@@ -6,9 +6,8 @@
 <opml version="2.0">
 	<head>
 		<title>RSSServer default OPML</title>
-		<dateCreated>Sat, 02 Nov 2019 12:00:00</dateCreated>
+		<dateCreated>Sat, 19 Sep 2020 12:00:00</dateCreated>
 	</head>
 	<body>
-		<outline text="RSSServer releases" type="rss" xmlUrl="https://github.com/RSSServer/RSSServer/releases.atom" htmlUrl="https://github.com/RSSServer/RSSServer/" description="RSSServer releases @ GitHub"/>
 	</body>
 </opml>

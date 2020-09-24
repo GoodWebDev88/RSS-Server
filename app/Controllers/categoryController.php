@@ -4,16 +4,16 @@
  * Controller to handle actions relative to categories.
  * User needs to be connected.
  */
-class RSSServer_category_Controller extends Minz_ActionController {
+class RSSServer_category_Controller extends Base_ActionController {
 	/**
 	 * This action is called before every other action in that class. It is
 	 * the common boiler plate for every action. It is triggered by the
-	 * underlying framework.
+	 * underlying BASE template.
 	 *
 	 */
 	public function firstAction() {
 		if (!RSSServer_Auth::hasAccess()) {
-			Minz_Error::error(403);
+			Base_Error::error(403);
 		}
 
 		$catDAO = RSSServer_Factory::createCategoryDao();
@@ -34,22 +34,22 @@ class RSSServer_category_Controller extends Minz_ActionController {
 		$this->view->categories = $catDAO->listCategories(false);
 
 		if (count($this->view->categories) >= $limits['max_categories']) {
-			Minz_Request::bad(_t('feedback.sub.category.over_max', $limits['max_categories']),
+			Base_Request::bad(_t('feedback.sub.category.over_max', $limits['max_categories']),
 			                  $url_redirect);
 		}
 
-		if (Minz_Request::isPost()) {
+		if (Base_Request::isPost()) {
 			invalidateHttpCache();
 
-			$cat_name = Minz_Request::param('new-category');
+			$cat_name = Base_Request::param('new-category');
 			if (!$cat_name) {
-				Minz_Request::bad(_t('feedback.sub.category.no_name'), $url_redirect);
+				Base_Request::bad(_t('feedback.sub.category.no_name'), $url_redirect);
 			}
 
 			$cat = new RSSServer_Category($cat_name);
 
 			if ($catDAO->searchByName($cat->name()) != null) {
-				Minz_Request::bad(_t('feedback.sub.category.name_exists'), $url_redirect);
+				Base_Request::bad(_t('feedback.sub.category.name_exists'), $url_redirect);
 			}
 
 			$values = array(
@@ -58,13 +58,13 @@ class RSSServer_category_Controller extends Minz_ActionController {
 			);
 
 			if ($catDAO->addCategory($values)) {
-				Minz_Request::good(_t('feedback.sub.category.created', $cat->name()), $url_redirect);
+				Base_Request::good(_t('feedback.sub.category.created', $cat->name()), $url_redirect);
 			} else {
-				Minz_Request::bad(_t('feedback.sub.category.error'), $url_redirect);
+				Base_Request::bad(_t('feedback.sub.category.error'), $url_redirect);
 			}
 		}
 
-		Minz_Request::forward($url_redirect, true);
+		Base_Request::forward($url_redirect, true);
 	}
 
 	/**
@@ -78,17 +78,17 @@ class RSSServer_category_Controller extends Minz_ActionController {
 		$catDAO = RSSServer_Factory::createCategoryDao();
 		$url_redirect = array('c' => 'subscription', 'a' => 'index');
 
-		if (Minz_Request::isPost()) {
+		if (Base_Request::isPost()) {
 			invalidateHttpCache();
 
-			$id = Minz_Request::param('id');
-			$name = Minz_Request::param('name', '');
+			$id = Base_Request::param('id');
+			$name = Base_Request::param('name', '');
 			if (strlen($name) <= 0) {
-				Minz_Request::bad(_t('feedback.sub.category.no_name'), $url_redirect);
+				Base_Request::bad(_t('feedback.sub.category.no_name'), $url_redirect);
 			}
 
 			if ($catDAO->searchById($id) == null) {
-				Minz_Request::bad(_t('feedback.sub.category.not_exist'), $url_redirect);
+				Base_Request::bad(_t('feedback.sub.category.not_exist'), $url_redirect);
 			}
 
 			$cat = new RSSServer_Category($name);
@@ -97,13 +97,13 @@ class RSSServer_category_Controller extends Minz_ActionController {
 			);
 
 			if ($catDAO->updateCategory($id, $values)) {
-				Minz_Request::good(_t('feedback.sub.category.updated'), $url_redirect);
+				Base_Request::good(_t('feedback.sub.category.updated'), $url_redirect);
 			} else {
-				Minz_Request::bad(_t('feedback.sub.category.error'), $url_redirect);
+				Base_Request::bad(_t('feedback.sub.category.error'), $url_redirect);
 			}
 		}
 
-		Minz_Request::forward($url_redirect, true);
+		Base_Request::forward($url_redirect, true);
 	}
 
 	/**
@@ -119,24 +119,24 @@ class RSSServer_category_Controller extends Minz_ActionController {
 		$catDAO = RSSServer_Factory::createCategoryDao();
 		$url_redirect = array('c' => 'subscription', 'a' => 'index');
 
-		if (Minz_Request::isPost()) {
+		if (Base_Request::isPost()) {
 			invalidateHttpCache();
 
-			$id = Minz_Request::param('id');
+			$id = Base_Request::param('id');
 			if (!$id) {
-				Minz_Request::bad(_t('feedback.sub.category.no_id'), $url_redirect);
+				Base_Request::bad(_t('feedback.sub.category.no_id'), $url_redirect);
 			}
 
 			if ($id === RSSServer_CategoryDAO::DEFAULTCATEGORYID) {
-				Minz_Request::bad(_t('feedback.sub.category.not_delete_default'), $url_redirect);
+				Base_Request::bad(_t('feedback.sub.category.not_delete_default'), $url_redirect);
 			}
 
 			if ($feedDAO->changeCategory($id, RSSServer_CategoryDAO::DEFAULTCATEGORYID) === false) {
-				Minz_Request::bad(_t('feedback.sub.category.error'), $url_redirect);
+				Base_Request::bad(_t('feedback.sub.category.error'), $url_redirect);
 			}
 
 			if ($catDAO->deleteCategory($id) === false) {
-				Minz_Request::bad(_t('feedback.sub.category.error'), $url_redirect);
+				Base_Request::bad(_t('feedback.sub.category.error'), $url_redirect);
 			}
 
 			// Remove related queries.
@@ -144,10 +144,10 @@ class RSSServer_category_Controller extends Minz_ActionController {
 				'c_' . $id, RSSServer_Context::$user_conf->queries);
 			RSSServer_Context::$user_conf->save();
 
-			Minz_Request::good(_t('feedback.sub.category.deleted'), $url_redirect);
+			Base_Request::good(_t('feedback.sub.category.deleted'), $url_redirect);
 		}
 
-		Minz_Request::forward($url_redirect, true);
+		Base_Request::forward($url_redirect, true);
 	}
 
 	/**
@@ -161,12 +161,12 @@ class RSSServer_category_Controller extends Minz_ActionController {
 		$feedDAO = RSSServer_Factory::createFeedDao();
 		$url_redirect = array('c' => 'subscription', 'a' => 'index');
 
-		if (Minz_Request::isPost()) {
+		if (Base_Request::isPost()) {
 			invalidateHttpCache();
 
-			$id = Minz_Request::param('id');
+			$id = Base_Request::param('id');
 			if (!$id) {
-				Minz_Request::bad(_t('feedback.sub.category.no_id'), $url_redirect);
+				Base_Request::bad(_t('feedback.sub.category.no_id'), $url_redirect);
 			}
 
 			// List feeds to remove then related user queries.
@@ -182,12 +182,12 @@ class RSSServer_category_Controller extends Minz_ActionController {
 				}
 				RSSServer_Context::$user_conf->save();
 
-				Minz_Request::good(_t('feedback.sub.category.emptied'), $url_redirect);
+				Base_Request::good(_t('feedback.sub.category.emptied'), $url_redirect);
 			} else {
-				Minz_Request::bad(_t('feedback.sub.category.error'), $url_redirect);
+				Base_Request::bad(_t('feedback.sub.category.error'), $url_redirect);
 			}
 		}
 
-		Minz_Request::forward($url_redirect, true);
+		Base_Request::forward($url_redirect, true);
 	}
 }

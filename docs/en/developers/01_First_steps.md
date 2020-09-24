@@ -1,6 +1,6 @@
 # Environment configuration (Docker)
 
-RSSServer is built with PHP and uses a homemade framework, Minz. The dependencies are directly included in the source code, so you don't need Composer.
+RSSServer is built with PHP and uses a homemade template, Base. The dependencies are directly included in the source code, so you don't need Composer.
 
 There are various ways to configure your development environment. The easiest and most supported method is based on Docker, which is the solution documented below. If you already have a working PHP environment, you probably don't need it.
 

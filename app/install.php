@@ -31,8 +31,8 @@ function param($key, $default = false) {
 
 // gestion internationalisation
 function initTranslate() {
-	Minz_Translate::init();
-	$available_languages = Minz_Translate::availableLanguages();
+	Base_Translate::init();
+	$available_languages = Base_Translate::availableLanguages();
 
 	if (!isset($_SESSION['language'])) {
 		$_SESSION['language'] = get_best_language();
@@ -42,7 +42,7 @@ function initTranslate() {
 		$_SESSION['language'] = 'en';
 	}
 
-	Minz_Translate::reset($_SESSION['language']);
+	Base_Translate::reset($_SESSION['language']);
 }
 
 function get_best_language() {
@@ -72,16 +72,16 @@ function saveStep1() {
 		// with values from the previous installation
 
 		// First, we try to get previous configurations
-		Minz_Configuration::register('system',
+		Base_Configuration::register('system',
 		                             join_path(DATA_PATH, 'config.php'),
 		                             join_path(RSSSERVER_PATH, 'config.default.php'));
-		$system_conf = Minz_Configuration::get('system');
+		$system_conf = Base_Configuration::get('system');
 
 		$current_user = $system_conf->default_user;
-		Minz_Configuration::register('user',
+		Base_Configuration::register('user',
 		                             join_path(USERS_PATH, $current_user, 'config.php'),
 		                             join_path(RSSSERVER_PATH, 'config-user.default.php'));
-		$user_conf = Minz_Configuration::get('user');
+		$user_conf = Base_Configuration::get('user');
 
 		// Then, we set $_SESSION vars
 		$_SESSION['title'] = $system_conf->title;
@@ -128,7 +128,7 @@ function saveStep2() {
 		}
 
 		// We use dirname to remove the /i part
-		$base_url = dirname(Minz_Request::guessBaseUrl());
+		$base_url = dirname(Base_Request::guessBaseUrl());
 		$config_array = [
 			'salt' => generateSalt(),
 			'base_url' => $base_url,
@@ -142,7 +142,7 @@ function saveStep2() {
 				'prefix' => $_SESSION['bd_prefix'],
 				'pdo_options' => [],
 			],
-			'pubsubhubbub_enabled' => Minz_Request::serverIsPublic($base_url),
+			'pubsubhubbub_enabled' => Base_Request::serverIsPublic($base_url),
 		];
 		if (!empty($_SESSION['title'])) {
 			$config_array['title'] = $_SESSION['title'];
@@ -158,14 +158,14 @@ function saveStep2() {
 			opcache_reset();
 		}
 
-		Minz_Configuration::register('system', DATA_PATH . '/config.php', RSSSERVER_PATH . '/config.default.php');
-		RSSServer_Context::$system_conf = Minz_Configuration::get('system');
+		Base_Configuration::register('system', DATA_PATH . '/config.php', RSSSERVER_PATH . '/config.default.php');
+		RSSServer_Context::$system_conf = Base_Configuration::get('system');
 
 		$ok = false;
 		try {
-			Minz_Session::_param('currentUser', $config_array['default_user']);
+			Base_Session::_param('currentUser', $config_array['default_user']);
 			$ok = initDb();
-			Minz_Session::_param('currentUser');
+			Base_Session::_param('currentUser');
 		} catch (Exception $ex) {
 			$_SESSION['bd_error'] = $ex->getMessage();
 			$ok = false;
@@ -185,9 +185,9 @@ function saveStep2() {
 }
 
 function saveStep3() {
-	$user_default_config = Minz_Configuration::get('default_user');
+	$user_default_config = Base_Configuration::get('default_user');
 	if (!empty($_POST)) {
-		$system_default_config = Minz_Configuration::get('default_system');
+		$system_default_config = Base_Configuration::get('default_system');
 		$_SESSION['title'] = $system_default_config->title;
 		$_SESSION['auth_type'] = param('auth_type', 'form');
 		if (RSSServer_user_Controller::checkUsername(param('default_user', ''))) {
@@ -204,9 +204,9 @@ function saveStep3() {
 			return false;
 		}
 
-		Minz_Configuration::register('system', DATA_PATH . '/config.php', RSSSERVER_PATH . '/config.default.php');
-		RSSServer_Context::$system_conf = Minz_Configuration::get('system');
-		Minz_Translate::init($_SESSION['language']);
+		Base_Configuration::register('system', DATA_PATH . '/config.php', RSSSERVER_PATH . '/config.default.php');
+		RSSServer_Context::$system_conf = Base_Configuration::get('system');
+		Base_Translate::init($_SESSION['language']);
 
 		RSSServer_Context::$system_conf->default_user = $_SESSION['default_user'];
 		RSSServer_Context::$system_conf->save();
@@ -257,7 +257,7 @@ function checkStep() {
 }
 
 function checkStep0() {
-	$languages = Minz_Translate::availableLanguages();
+	$languages = Base_Translate::availableLanguages();
 	$language = isset($_SESSION['language']) &&
 	            in_array($_SESSION['language'], $languages);
 
@@ -276,17 +276,17 @@ function rssserver_already_installed() {
 	// A configuration file already exists, we try to load it.
 	$system_conf = null;
 	try {
-		Minz_Configuration::register('system', $conf_path);
-		$system_conf = Minz_Configuration::get('system');
-	} catch (Minz_FileNotExistException $e) {
+		Base_Configuration::register('system', $conf_path);
+		$system_conf = Base_Configuration::get('system');
+	} catch (Base_FileNotExistException $e) {
 		return false;
 	}
 
 	// ok, the global conf exists... but what about default user conf?
 	$current_user = $system_conf->default_user;
 	try {
-		Minz_Configuration::register('user', join_path(USERS_PATH, $current_user, 'config.php'));
-	} catch (Minz_FileNotExistException $e) {
+		Base_Configuration::register('user', join_path(USERS_PATH, $current_user, 'config.php'));
+	} catch (Base_FileNotExistException $e) {
 		return false;
 	}
 
@@ -336,8 +336,8 @@ function checkStep3() {
 
 /*** AFFICHAGE ***/
 function printStep0() {
-	$actual = Minz_Translate::language();
-	$languages = Minz_Translate::availableLanguages();
+	$actual = Base_Translate::language();
+	$languages = Base_Translate::availableLanguages();
 ?>
 	<?php $s0 = checkStep0(); if ($s0['all'] == 'ok') { ?>
 	<p class="alert alert-success"><span class="alert-head"><?= _t('gen.short.ok') ?></span> <?= _t('install.language.defined') ?></p>
@@ -383,10 +383,10 @@ function printStep1() {
 	<p class="alert alert-error"><span class="alert-head"><?= _t('gen.short.damn') ?></span> <?= _t('install.check.php.nok', PHP_VERSION, '5.6.0') ?></p>
 	<?php } ?>
 
-	<?php if ($res['minz'] == 'ok') { ?>
-	<p class="alert alert-success"><span class="alert-head"><?= _t('gen.short.ok') ?></span> <?= _t('install.check.minz.ok') ?></p>
+	<?php if ($res['base'] == 'ok') { ?>
+	<p class="alert alert-success"><span class="alert-head"><?= _t('gen.short.ok') ?></span> <?= _t('install.check.base.ok') ?></p>
 	<?php } else { ?>
-	<p class="alert alert-error"><span class="alert-head"><?= _t('gen.short.damn') ?></span> <?= _t('install.check.minz.nok', join_path(LIB_PATH, 'Minz')) ?></p>
+	<p class="alert alert-error"><span class="alert-head"><?= _t('gen.short.damn') ?></span> <?= _t('install.check.base.nok', join_path(LIB_PATH, 'Base')) ?></p>
 	<?php } ?>
 
 	<?php if ($res['pdo'] == 'ok') { ?>
@@ -492,7 +492,7 @@ function printStep1() {
 }
 
 function printStep2() {
-	$system_default_config = Minz_Configuration::get('default_system');
+	$system_default_config = Base_Configuration::get('default_system');
 ?>
 	<?php $s2 = checkStep2(); if ($s2['all'] == 'ok') { ?>
 	<p class="alert alert-success"><span class="alert-head"><?= _t('gen.short.ok') ?></span> <?= _t('install.bdd.conf.ok') ?></p>
@@ -579,7 +579,7 @@ function printStep2() {
 }
 
 function printStep3() {
-	$user_default_config = Minz_Configuration::get('default_user');
+	$user_default_config = Base_Configuration::get('default_user');
 ?>
 	<?php $s3 = checkStep3(); if ($s3['all'] == 'ok') { ?>
 	<p class="alert alert-success"><span class="alert-head"><?= _t('gen.short.ok') ?></span> <?= _t('install.conf.ok') ?></p>

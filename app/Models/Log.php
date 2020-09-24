@@ -1,6 +1,6 @@
 <?php
 
-class RSSServer_Log extends Minz_Model {
+class RSSServer_Log extends Base_Model {
 	private $date;
 	private $level;
 	private $information;

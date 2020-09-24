@@ -117,10 +117,10 @@ class RSSServer_ReadingMode {
 	 * return ReadingMode[]
 	 */
 	public static function getReadingModes() {
-		$actualView = Minz_Request::actionName();
-		$defaultCtrl = Minz_Request::defaultControllerName();
-		$isDefaultCtrl = Minz_Request::controllerName() === $defaultCtrl;
-		$urlOutput = Minz_Request::currentRequest();
+		$actualView = Base_Request::actionName();
+		$defaultCtrl = Base_Request::defaultControllerName();
+		$isDefaultCtrl = Base_Request::controllerName() === $defaultCtrl;
+		$urlOutput = Base_Request::currentRequest();
 
 		$readingModes = array(
 			new RSSServer_ReadingMode(

@@ -1,6 +1,6 @@
 # Preparing the release
 
-In order to get as much feedback as possible before a release, it's preferable to announce it on GitHub by creating a dedicated ticket ([see examples] (https://github.com/RSSServer/RSSServer/search?utf8=%E2%9C%93&q=Call+for+testing&type=Issues)). This should be done **at least one week in advance**.
+In order to get as much feedback as possible before a release, it's preferable to announce it on GitHub by creating a dedicated ticket ([see examples] ). This should be done **at least one week in advance**.
 
 It's also recommended to make the announcement on mailing@rssserver.org.
 
@@ -28,7 +28,7 @@ $ git push && git push --tags
 
 It's important to update update.rssserver.org since this is the default service for automatic RSSServer updates.
 
-The repository managing the code is located on GitHub: [RSSServer/update.rssserver.org] (https://github.com/RSSServer/update.rssserver.org/).
+The repository managing the code is located on GitHub: [RSSServer/update.rssserver.org] .
 
 ## Writing the update script
 
@@ -42,7 +42,7 @@ There are then 5 functions that have to be executed:
 * `need_info_update()` returns `true` if the user must intervene during the update or `false` if not;
 * `ask_info_update()` displays a form to the user if `need_info_update()` has returned `true`;
 * `save_info_update()` is responsible for saving the information filled out by the user (from the `ask_info_update()` form);
-* `do_post_update()` is executed at the end of the update and takes into account the code of the new version (e.g., if the new version changes the `Minz_Configuration` object, you will benefit from these improvements).
+* `do_post_update()` is executed at the end of the update and takes into account the code of the new version (e.g., if the new version changes the `Base_Configuration` object, you will benefit from these improvements).
 
 ## Updating the versions file
 
@@ -91,8 +91,8 @@ Two services need to be updated immediately after the update.
 
 When everything's working, it's time to announce the release to the world!
 
-* on GitHub by creating[a new release](https://github.com/RSSServer/RSSServer/releases/new)
-* on the rssserver.org blog, at least for stable versions (write the article on[RSSServer/rssserver.org](https://github.com/RSSServer/rssserver.org))
+* on GitHub by creating[a new release]
+* on the rssserver.org blog, at least for stable versions (write the article on[RSSServer/rssserver.org])
 * on Twitter ([@RSSServer](https://twitter.com/RSSServer) account)
 * and on mailing@rssserver.org
 

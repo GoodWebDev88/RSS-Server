@@ -70,9 +70,9 @@ return array(
 			'nok' => '找不到推荐的 Unicode 解析库（mbstring)',
 			'ok' => '已找到推荐的 Unicode 解析库（mbstring)',
 		),
-		'minz' => array(
-			'nok' => '找不到 Minz 框架',
-			'ok' => '已找到 Minz 框架',
+		'base' => array(
+			'nok' => '找不到 Base 框架',
+			'ok' => '已找到 Base 框架',
 		),
 		'pcre' => array(
 			'nok' => '找不到正则表达式解析库（php-pcre）',

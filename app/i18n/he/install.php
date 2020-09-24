@@ -72,9 +72,9 @@ return array(
 			'nok' => 'Cannot find the recommended library mbstring for Unicode.',	// TODO - Translation
 			'ok' => 'You have the recommended library mbstring for Unicode.',	// TODO - Translation
 		),
-		'minz' => array(
-			'nok' => 'You lack the Minz framework.',
-			'ok' => 'יש לכם את תשתית Minz',
+		'base' => array(
+			'nok' => 'You lack the Base template.',
+			'ok' => 'יש לכם את תשתית Base',
 		),
 		'pcre' => array(
 			'nok' => 'הספרייה הנדרשת לביטויים רגולריים אינה מותקנת (php-pcre)',

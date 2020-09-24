@@ -1,33 +1,33 @@
 Screwdriver 
 =======
 
-**C'est un cocktail! C'est chaud mais "fresh" à la fois. C'est... c'est... un thème pour l'agrégateur de flux RSS<a href="https://github.com/RSSServer/RSSServer/" target="blank">RSSServer</a>!!**
-En toute modestie, ce thème tue du chaton.
+**It's a cocktail! It's hot but "fresh" at the same time. This is ... this is ... a theme for the RSS feed aggregator !! **
+In all modesty, this theme kills kittens.
 
 ![screenshot](https://github.com/misterair/Screwdriver/blob/master/screenshot.png)
 
 
 Installation
 -----------------
-1. Placez le dossier du thème dans ledossier /RSSServer/public/themes/Screwdriver de votre RSSServer;
-2. Allez dans les paramètres d'Affichage et changez de thème;
-3. Profitez de votre Screwdriver!
-4. Remontez les problèmes sur Github (facultatif mais fortement apprécié)
+1. Place the theme folder in the / RSSServer / public / themes / Screwdriver folder of your RSSServer;
+2. Go to the Display settings and change the theme;
+3. Enjoy your Screwdriver!
+4. Report issues on Github (optional but highly appreciated)
 
 
 
-Screwdriver est distribué sous license BeerWare:
+Screwdriver is distributed under the BeerWare license:
 -----------------
 
-« LICENCE BEERWARE » (Révision 42):
+“BEERWARE LICENSE” (Revision 42):
 
-mister.air@gmail.com a créé ce fichier. Tant que vous conservez cet avertissement,
+mister.air@gmail.com created this file. As long as you keep this warning,
 
-vous pouvez faire ce que vous voulez de ce truc. Si on se rencontre un jour et
+you can do whatever you want with this stuff. If we meet one day and
 
-que vous pensez que ce truc vaut le coup, vous pouvez me payer une bière en retour.
+that you think this stuff is worth it, you can buy me a beer in return.
 
-*Mister aiR*
+* Mister aiR *
 
 
 

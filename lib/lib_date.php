@@ -1,29 +1,25 @@
 <?php
 /**
- * Author: Alexandre Alapetite https://alexandre.alapetite.fr
- * 2014-06-01
- * License: GNU AGPLv3 http://www.gnu.org/licenses/agpl-3.0.html
- *
  * Parser of ISO 8601 time intervals http://en.wikipedia.org/wiki/ISO_8601#Time_intervals
- *	Examples: "2014-02/2014-04", "2014-02/04", "2014-06", "P1M"
+ *	Examples: "2020-02/2020-04", "2020-02/04", "2020-06", "P1M"
  */
 
 /*
-example('2014-03');
-example('201403');
-example('2014-03-30');
-example('2014-05-30T13');
-example('2014-05-30T13:30');
-example('2014-02/2014-04');
-example('2014-02--2014-04');
-example('2014-02/04');
-example('2014-02-03/05');
-example('2014-02-03T22:00/22:15');
-example('2014-02-03T22:00/15');
-example('2014-03/');
-example('/2014-03');
-example('2014-03/P1W');
-example('P1W/2014-05-25T23:59:59');
+example('2020-03');
+example('202003');
+example('2020-03-30');
+example('2020-05-30T13');
+example('2020-05-30T13:30');
+example('2020-02/2020-04');
+example('2020-02--2020-04');
+example('2020-02/04');
+example('2020-02-03/05');
+example('2020-02-03T22:00/22:15');
+example('2020-02-03T22:00/15');
+example('2020-03/');
+example('/2020-03');
+example('2020-03/P1W');
+example('P1W/2020-05-25T23:59:59');
 example('P1Y/');
 example('P1Y');
 example('P2M/');

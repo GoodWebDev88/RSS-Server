@@ -22,15 +22,6 @@
 * The date and time in the right-hand column is the date declared by the feed, not the time at which the article was received by RSS Server, and it is not used for sorting.
 	* In particular, when importing a new feed, all of its articles will appear at the top of the feed list regardless of their declared date.
 
-# Included libraries
-* [SimplePie](https://simplepie.org/)
-* [MINZ](https://github.com/marienfressinaud/MINZ)
-* [php-http-304](https://alexandre.alapetite.fr/doc-alex/php-http-304/)
-* [jQuery](https://jquery.com/)
-* [lib_opml](https://github.com/marienfressinaud/lib_opml)
-* [flotr2](http://www.humblesoftware.com/flotr2)
-* [PHPMailer](https://github.com/PHPMailer/PHPMailer)
-
 ## Only for some options or configurations
 * [bcrypt.js](https://github.com/dcodeIO/bcrypt.js)
 * [phpQuery](https://github.com/phpquery/phpquery)

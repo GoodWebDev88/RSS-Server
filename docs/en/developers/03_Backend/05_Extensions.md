@@ -2,35 +2,17 @@
 
 ## About RSSServer
 
-RSSServer is an RSS / Atom feed aggregator written in PHP dating back to October 2012. The official site is located at [rssserver.org](https://rssserver.org) and the official repository is hosted on Github: [github.com/RSSServer/RSSServer](https://github.com/RSSServer/RSSServer).
+RSSServer is an RSS / Atom feed aggregator written in PHP dating back to Sep 2020.
 
-## The problem
+## Understanding basic mechanics (Base and MVC)
 
-RSSServer is limited in its technical possibilities by various factors:
+**TODO** : move to 02_Base.md
 
-* The number of developers
-* The will to integrate certain changes
-* The level of "hacking" required to integrate marginal features
-
-While the first limitation can, in theory, be lifted by the participation of new contributors to the project, it depends on the willingness of contributors to take an interest in the source code of the entire project. In order to remove the other two limitations, most of the time it will be necessary to create a "fork".
-
-Another solution consists of an extension system. By allowing users to write their own extension without taking an interest in the core of the basic software, we allow for:
-
-1. Reducing the amount of source code a new contributor has to take in
-2. Unofficial integration of novelties
-3. No forking or main developer approval required.
-
-Note: it is quite conceivable that the functionalities of an extension can later be officially integrated into the RSSServer code. Extensions make it easy to propose a proof of concept.
-
-## Understanding basic mechanics (Minz and MVC)
-
-**TODO** : move to 02_Minz.md
-
-This data sheet should refer to the official RSSServer and Minz documentation (the PHP framework on which RSSServer is based). Unfortunately, this documentation does not yet exist. In a few words, here are the main things you should know. It is not necessary to read all the chapters in this section if you don't need to use a feature in your extension (if you don't need to translate your extension, no need to know more about the `Minz_Translate` module for example).
+This data sheet should refer to the RSSServer and Base documentation (the PHP template on which RSSServer is based). Unfortunately, this documentation does not yet exist. In a few words, here are the main things you should know. It is not necessary to read all the chapters in this section if you don't need to use a feature in your extension (if you don't need to translate your extension, no need to know more about the `Base_Translate` module for example).
 
 ### MVC Architecture
 
-Minz relies on and imposes an MVC architecture on projects using it. This architecture consists of three main components:
+Base relies on and imposes an MVC architecture on projects using it. This architecture consists of three main components:
 
 * The model: this is the base object that we will manipulate. In RSSServer, categories, flows and articles are templates. The part of the code that makes it possible to manipulate them in a database is also part of the model but is separated from the base model: we speak of DAO (for "Data Access Object"). The templates are stored in a `Models` folder.
 * The view: this is what the user sees. The view is therefore simply HTML code mixed with PHP to display dynamic information. The views are stored in a `views` folder.
@@ -47,7 +29,7 @@ Code example:
 ```php
 <?php
 
-class RSSServer_hello_Controller extends Minz_ActionController {
+class RSSServer_hello_Controller extends Base_ActionController {
 	public function indexAction() {
 		$this->view->a_variable = 'FooBar';
 	}
@@ -68,7 +50,7 @@ From now on, the `hello/world` naming convention will be used to refer to a cont
 
 ### Views
 
-Each view is associated with a controller and an action. The view associated with `hello/world` will be stored in a very specific file: `views/hello/world. phtml`. This convention is imposed by Minz.
+Each view is associated with a controller and an action. The view associated with `hello/world` will be stored in a very specific file: `views/hello/world. phtml`. This convention is imposed by Base.
 
 As explained above, the views consist of HTML mixed with PHP. Code example:
 
@@ -82,40 +64,40 @@ The variable `$this->a_variable` is passed by the controller (see previous examp
 
 ### Working with GET / POST
 
-It is often necessary to take advantage of parameters passed by GET or POST. In Minz, these parameters are accessible using the `Minz_Request` class.
+It is often necessary to take advantage of parameters passed by GET or POST. In Base, these parameters are accessible using the `Base_Request` class.
 Code example:
 
 ```php
 <?php
 
 $default_value = 'foo';
-$param = Minz_Request::param('bar', $default_value);
+$param = Base_Request::param('bar', $default_value);
 
 // Display the value of the parameter `bar` (passed via GET or POST)
 // or "foo" if the parameter does not exist.
 echo $param;
 
 // Sets the value of the `bar` parameter
-Minz_Request::_param('bar', 'baz');
+Base_Request::_param('bar', 'baz');
 
 // Will necessarily display "baz" since we have just forced its value.
 // Note that the second parameter (default) is optional.
-echo Minz_Request::param('bar');
+echo Base_Request::param('bar');
 
 ?>
 ```
 
-The `Minz_Request::isPost()` method can be used to execute a piece of code only if it is a POST request.
+The `Base_Request::isPost()` method can be used to execute a piece of code only if it is a POST request.
 
-Note: it is preferable to use `Minz_Request` only in controllers. It is likely that you will encounter this method in RSSServer views, or even in templates, but be aware that this is **not** good practice.
+Note: it is preferable to use `Base_Request` only in controllers. It is likely that you will encounter this method in RSSServer views, or even in templates, but be aware that this is **not** good practice.
 
 ### Access session settings
 
-The access to session parameters is strangely similar to the GET / POST parameters but passes through the `Minz_Session` class this time! There is no example here because you can repeat the previous example by changing all `Minz_Request` to `Minz_Session`.
+The access to session parameters is strangely similar to the GET / POST parameters but passes through the `Base_Session` class this time! There is no example here because you can repeat the previous example by changing all `Base_Request` to `Base_Session`.
 
 ### Working with URLs
 
-To take full advantage of the Minz routing system, it is strongly discouraged to write hard URLs in your code. For example, the following view should be avoided:
+To take full advantage of the Base routing system, it is strongly discouraged to write hard URLs in your code. For example, the following view should be avoided:
 
 ```html
 <p>
@@ -125,7 +107,7 @@ To take full advantage of the Minz routing system, it is strongly discouraged to
 
 If one day it was decided to use a "url rewriting" system to have addresses in a http://exemple.com/controller/action format, all previous addresses would become ineffective!
 
-So use the `Minz_Url` class and its `display()` method instead. `Minz_Url::display()` takes an array of the following form as its argument:
+So use the `Base_Url` class and its `display()` method instead. `Base_Url::display()` takes an array of the following form as its argument:
 
 ```php
 <?php
@@ -139,7 +121,7 @@ $url_array = [
 ];
 
 // Show something like .?c=hello&amp;a=world&amp;foo=bar
-echo Minz_Url::display($url_array);
+echo Base_Url::display($url_array);
 
 ?>
 ```
@@ -155,11 +137,11 @@ echo _url('hello', 'world', 'foo', 'bar');
 ?>
 ```
 
-Note: as a general rule, the shortened form (`_url()`) should be used in views, while the long form (`Minz_Url::display()`) should be used in controllers.
+Note: as a general rule, the shortened form (`_url()`) should be used in views, while the long form (`Base_Url::display()`) should be used in controllers.
 
 ### Redirections
 
-It is often necessary to redirect a user to another page. To do so, the `Minz_Request` class offers another useful method: `forward()`. This method takes the same URL format as the one seen just before as its argument.
+It is often necessary to redirect a user to another page. To do so, the `Base_Request` class offers another useful method: `forward()`. This method takes the same URL format as the one seen just before as its argument.
 
 Code example:
 
@@ -171,14 +153,14 @@ $url_array = [
 	'a' => 'world',
 ];
 
-// Tells Minz to redirect the user to the hello / world page.
-// Note that this is a redirection in the Minz sense of the term, not a redirection that the browser will have to manage (HTTP code 301 or 302)
+// Tells Base to redirect the user to the hello / world page.
+// Note that this is a redirection in the Base sense of the term, not a redirection that the browser will have to manage (HTTP code 301 or 302)
 // The code that follows forward() will thus be executed!
-Minz_Request::forward($url_array);
+Base_Request::forward($url_array);
 
 // To perform a type 302 redirect, add "true".
 // The code that follows will never be executed.
-Minz_Request::forward($url_array, true);
+Base_Request::forward($url_array, true);
 
 ?>
 ```
@@ -195,11 +177,11 @@ $url_array = [
 $feedback_good = 'All went well!';
 $feedback_bad = 'Oops, something went wrong.';
 
-Minz_Request::good($feedback_good, $url_array);
+Base_Request::good($feedback_good, $url_array);
 
 // or
 
-Minz_Request::bad($feedback_bad, $url_array);
+Base_Request::bad($feedback_bad, $url_array);
 
 ?>
 ```
@@ -212,7 +194,7 @@ This part [is explained here](/docs/en/internationalization.md).
 
 ## Write an extension for RSSServer
 
-Here we are! We've talked about the most useful features of Minz and how to run RSSServer correctly and it's about time to address the extensions themselves.
+Here we are! We've talked about the most useful features of Base and how to run RSSServer correctly and it's about time to address the extensions themselves.
 
 An extension allows you to easily add functionality to RSSServer without having to touch the core of the project directly.
 
@@ -225,7 +207,7 @@ The convention requires that the main directory name be preceded by an "x" to in
 The main directory of an extension must contain at least two **mandatory** files:
 
 * A `metadata.json` file that contains a description of the extension. This file is written in JSON.
-* An `extension.php` file containing the entry point of the extension (which is a class that inherits Minz_Extension).
+* An `extension.php` file containing the entry point of the extension (which is a class that inherits Base_Extension).
 
 Please note that there is a not a required link between the directory name of the extension and the name of the class inside `extension.php`,
 but you should follow our best practice:
@@ -233,13 +215,13 @@ If you want to write a `HelloWorld` extension, the directory name should be `xEx
 
 In the file `rssserver/extensions/xExtension-HelloWorld/extension.php` you need the structure:
 ```html
-class HelloWorldExtension extends Minz_Extension {
+class HelloWorldExtension extends Base_Extension {
 	public function init() {
 		// your code here
 	}
 }
 ```
-There is an example HelloWorld extension that you can download from [our GitHub repo](https://github.com/RSSServer/xExtension-HelloWorld).
+There is an example HelloWorld extension that you can download from [our GitHub repo].
 
 You may also need additional files or subdirectories depending on your needs:
 
@@ -274,7 +256,7 @@ A __system__ extension in comparison is enabled for every account.
 
 This file is the entry point of your extension. It must contain a specific class to function.
 As mentioned above, the name of the class must be your `entrypoint` suffixed by` Extension` (`HelloWorldExtension` for example).
-In addition, this class must be inherited from the `Minz_Extension` class to benefit from extensions-specific methods.
+In addition, this class must be inherited from the `Base_Extension` class to benefit from extensions-specific methods.
 
 Your class will benefit from four methods to redefine:
 
@@ -283,11 +265,11 @@ Your class will benefit from four methods to redefine:
 * `init()` is called for every page load *if the extension is enabled*. It will therefore initialize the behavior of the extension. This is the most important method.
 * `handleConfigureAction()` is called when a user loads the extension management panel. Specifically, it is called when the `?c=extension&a=configured&e=name-of-your-extension` URL is loaded. You should also write here the behavior you want when validating the form in your `configure.phtml` file.
 
-In addition, you will have a number of methods directly inherited from `Minz_Extension` that you should not redefine:
+In addition, you will have a number of methods directly inherited from `Base_Extension` that you should not redefine:
 
 * The "getters" first: most are explicit enough not to detail them here - `getName()`, `getEntrypoint()`, `getPath()` (allows you to retrieve the path to your extension), `getAuthor()`, `getDescription()`, `getVersion()`, `getType()`.
 * `getFileUrl($filename, $type)` will return the URL to a file in the `static` directory. The first parameter is the name of the file (without `static /`), the second is the type of file to be used (`css` or` js`).
-* `registerController($base_name)` will tell Minz to take into account the given controller in the routing system. The controller must be located in your `Controllers` directory, the name of the file must be` <base_name>Controller.php` and the name of the `FreshExtension_<base_name>_Controller` class.
+* `registerController($base_name)` will tell Base to take into account the given controller in the routing system. The controller must be located in your `Controllers` directory, the name of the file must be` <base_name>Controller.php` and the name of the `FreshExtension_<base_name>_Controller` class.
 
 **TODO**
 
@@ -300,7 +282,7 @@ In addition, you will have a number of methods directly inherited from `Minz_Ext
 You can register at the RSSServer event system in an extensions `init()` method, to manipulate data when some of the core functions are executed.
 
 ```html
-class HelloWorldExtension extends Minz_Extension
+class HelloWorldExtension extends Base_Extension
 {
 	public function init() {
 		$this->registerHook('entry_before_display', array($this, 'renderEntry'));
