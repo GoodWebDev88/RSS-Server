@@ -10,7 +10,7 @@ class RSSServer_stats_Controller extends Base_ActionController {
 	 * the common boiler plate for every action. It is triggered by the
 	 * underlying BASE template.
 	 */
-	public function firstAction() {
+	public function prependAction() {
 		if (!RSSServer_Auth::hasAccess()) {
 			Base_Error::error(403);
 		}

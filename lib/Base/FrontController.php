@@ -20,11 +20,11 @@ class Base_FrontController {
 			Base_Request::init();
 
 			$url = $this->buildUrl();
-			$url['params'] = array_merge (
+			$url['params'] = array_merge(
 				$url['params'],
-				Base_Request::fetchPOST ()
+				Base_Request::fetchPOST()
 			);
-			Base_Request::forward ($url);
+			Base_Request::forward($url);
 		} catch (Base_Exception $e) {
 			Base_Log::error($e->getMessage());
 			$this->killApp ($e->getMessage ());
@@ -38,7 +38,7 @@ class Base_FrontController {
 	 * @return table representing the url
 	 */
 	private function buildUrl() {
-		$url = array ();
+		$url = array();
 
 		$url['c'] = Base_Request::fetchGET(
 			'c',
@@ -54,6 +54,9 @@ class Base_FrontController {
 		unset ($url['params']['c']);
 		unset ($url['params']['a']);
 
+		// echo '@@@ FrontController@buildUrl';
+		// var_dump($url);
+
 		return $url;
 	}
 
@@ -67,7 +70,7 @@ class Base_FrontController {
 			try {
 				Base_Log::error($e->getMessage());
 			} catch (Base_PermissionDeniedException $e) {
-				$this->killApp ($e->getMessage ());
+				$this->killApp ($e->getMessage());
 			}
 
 			if ($e instanceof Base_FileNotExistException ||
@@ -76,11 +79,11 @@ class Base_FrontController {
 					$e instanceof Base_ActionException) {
 				Base_Error::error (
 					404,
-					array ('error' => array ($e->getMessage ())),
+					array ('error' => array($e->getMessage())),
 					true
 				);
 			} else {
-				$this->killApp ();
+				$this->killApp();
 			}
 		}
 	}

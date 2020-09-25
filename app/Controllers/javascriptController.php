@@ -1,7 +1,7 @@
 <?php
 
 class RSSServer_javascript_Controller extends Base_ActionController {
-	public function firstAction() {
+	public function prependAction() {
 		$this->view->_layout(false);
 	}
 

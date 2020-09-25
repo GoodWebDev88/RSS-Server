@@ -58,10 +58,20 @@ class Base_View {
 	/**
 	 * Builds the view
 	 */
-	public function build () {
+	public function build() {
+		$conf = Base_Configuration::get('system');
 		if ($this->layout_filename !== '') {
+			if ($conf->debugging) {
+				echo '@@@ View@build: layout';
+				var_dump($this->layout_filename);
+			}
+
 			$this->buildLayout();
 		} else {
+			if ($conf->debugging) {
+				echo '@@@ View@build: render';
+			}
+
 			$this->render();
 		}
 	}

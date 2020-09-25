@@ -49,7 +49,7 @@ class RSSServer_update_Controller extends Base_ActionController {
 		return $return == 0 ? true : 'Git error: ' . $line;
 	}
 
-	public function firstAction() {
+	public function prependAction() {
 		if (!RSSServer_Auth::hasAccess('admin')) {
 			Base_Error::error(403);
 		}

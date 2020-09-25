@@ -34,15 +34,24 @@ class Base_Dispatcher {
 
 			try {
 				$this->createController(Base_Request::controllerName());
+				
+				$conf = Base_Configuration::get('system');
+				if ($conf->debugging) {
+					echo '@@@ Dispatcher@run: controllerName';
+					var_dump(Base_Request::controllerName());
+					echo('@@@ Dispatcher@run: actionName');
+					var_dump(Base_Request::actionName());
+				}
+
 				$this->controller->init();
-				$this->controller->firstAction();
+				$this->controller->prependAction();
 				if (!self::$needsReset) {
 					$this->launchAction(
 						Base_Request::actionName()
 						. 'Action'
 					);
 				}
-				$this->controller->lastAction();
+				$this->controller->appendAction();
 
 				if (!self::$needsReset) {
 					$this->controller->declareCspHeader();
@@ -52,12 +61,24 @@ class Base_Dispatcher {
 				throw $e;
 			}
 		} while (self::$needsReset);
+
+		$conf = Base_Configuration::get('system');
+		if ($conf->debugging) {
+			echo '@@@ Dispatcher@run:';
+			var_dump('exit in loop');
+		}
 	}
 
 	/**
 	 * Informs the controller that he must start again because the request has been modified
 	 */
 	public static function reset() {
+		$conf = Base_Configuration::get('system');
+		if ($conf->debugging) {
+			echo '@@@ Dispatcher@reset:';
+			var_dump('reset is called');
+		}
+		
 		self::$needsReset = true;
 	}
 
@@ -82,7 +103,7 @@ class Base_Dispatcher {
 				Base_Exception::ERROR
 			);
 		}
-		$this->controller = new $controller_name ();
+		$this->controller = new $controller_name();
 
 		if (! ($this->controller instanceof Base_ActionController)) {
 			throw new Base_ControllerNotActionControllerException (

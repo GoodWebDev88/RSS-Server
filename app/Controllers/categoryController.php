@@ -11,7 +11,7 @@ class RSSServer_category_Controller extends Base_ActionController {
 	 * underlying BASE template.
 	 *
 	 */
-	public function firstAction() {
+	public function prependAction() {
 		if (!RSSServer_Auth::hasAccess()) {
 			Base_Error::error(403);
 		}

@@ -11,17 +11,17 @@ class Base_ActionController {
 	/**
 	 * Constructeur
 	 */
-	public function __construct () {
+	public function __construct() {
 		$this->view = new Base_View();
 		$view_path = Base_Request::controllerName() . '/' . Base_Request::actionName() . '.phtml';
 		$this->view->_path($view_path);
-		$this->view->attributeParams ();
+		$this->view->attributeParams();
 	}
 
 	/**
 	 * Getteur
 	 */
-	public function view () {
+	public function view() {
 		return $this->view;
 	}
 
@@ -60,10 +60,10 @@ class Base_ActionController {
 
 	/**
 	 * Methods to be redefined (or not) by inheritance
-	 * firstAction is the first method executed by the Dispatcher
-	 * lastAction is the last
+	 * prependAction is the previously method executed by the Dispatcher
+	 * appendAction is the after of the method.
 	 */
-	public function init () { }
-	public function firstAction () { }
-	public function lastAction () { }
+	public function init() { }
+	public function prependAction() { }
+	public function appendAction() { }
 }

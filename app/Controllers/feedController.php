@@ -9,7 +9,7 @@ class RSSServer_feed_Controller extends Base_ActionController {
 	 * the common boiler plate for every action. It is triggered by the
 	 * underlying BASE template.
 	 */
-	public function firstAction() {
+	public function prependAction() {
 		if (!RSSServer_Auth::hasAccess()) {
 			// Token is useful in the case that anonymous refresh is forbidden
 			// and CRON task cannot be used with php command so the user can

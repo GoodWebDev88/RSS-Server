@@ -4,9 +4,12 @@
 # but edit `./data/config.php` instead, after the install process is completed.
 return array(
 
+	# if this value is true, the custom messages(marked with @@@) will be shown.
+	'debugging' => false,
+
 	# Set to `development` to get additional error messages,
-	#	or to `production` to get only the most important messages.
-	'environment' => 'production',
+	#	or to `production` to get only the most important messages.	
+	'environment' => 'development',
 
 	# Used to make crypto more unique. Generated during install.
 	'salt' => '',
